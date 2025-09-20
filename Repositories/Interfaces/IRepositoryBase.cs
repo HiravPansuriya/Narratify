@@ -1,13 +1,13 @@
-
 using System.Linq.Expressions;
 
 namespace Narratify.Repositories.Interfaces;
 
 public interface IRepositoryBase<T>
 {
-    IQueryable<T> FindAll(bool trackChanges);
-    IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression, bool trackChanges);
-    void Create(T entity);
+    Task<IEnumerable<T>> GetAllAsync();
+    Task<T?> GetByIdAsync(int id);
+    Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> expression);
+    Task AddAsync(T entity);
     void Update(T entity);
-    void Delete(T entity);
+    void Remove(T entity);
 }

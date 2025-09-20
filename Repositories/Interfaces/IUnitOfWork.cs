@@ -1,4 +1,3 @@
-
 namespace Narratify.Repositories.Interfaces;
 
 public interface IUnitOfWork : IDisposable
@@ -7,5 +6,5 @@ public interface IUnitOfWork : IDisposable
     ICategoryRepository Categories { get; }
     ICommentRepository Comments { get; }
     IUserRepository Users { get; }
-    Task<int> SaveChangesAsync();
+    Task<int> CompleteAsync();
 }
