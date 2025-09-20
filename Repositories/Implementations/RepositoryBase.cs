@@ -1,31 +1,46 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using Narratify.Data;
 using Narratify.Repositories.Interfaces;
 
 namespace Narratify.Repositories.Implementations;
 
 public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class
 {
-    protected readonly DbContext DbContext;
+    protected readonly ApplicationDbContext DbContext;
 
-    protected RepositoryBase(DbContext dbContext)
+    protected RepositoryBase(ApplicationDbContext dbContext)
     {
         DbContext = dbContext;
     }
 
-    public IQueryable<T> FindAll(bool trackChanges) =>
-        !trackChanges
-            ? DbContext.Set<T>().AsNoTracking()
-            : DbContext.Set<T>();
+    public async Task<IEnumerable<T>> GetAllAsync()
+    {
+        return await DbContext.Set<T>().ToListAsync();
+    }
 
-    public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression, bool trackChanges) =>
-        !trackChanges
-            ? DbContext.Set<T>().Where(expression).AsNoTracking()
-            : DbContext.Set<T>().Where(expression);
+    public async Task<T?> GetByIdAsync(int id)
+    {
+        return await DbContext.Set<T>().FindAsync(id);
+    }
 
-    public void Create(T entity) => DbContext.Set<T>().Add(entity);
+    public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> expression)
+    {
+        return await DbContext.Set<T>().Where(expression).ToListAsync();
+    }
 
-    public void Update(T entity) => DbContext.Set<T>().Update(entity);
+    public async Task AddAsync(T entity)
+    {
+        await DbContext.Set<T>().AddAsync(entity);
+    }
 
-    public void Delete(T entity) => DbContext.Set<T>().Remove(entity);
+    public void Update(T entity)
+    {
+        DbContext.Set<T>().Update(entity);
+    }
+
+    public void Remove(T entity)
+    {
+        DbContext.Set<T>().Remove(entity);
+    }
 }

@@ -21,7 +21,7 @@ public class UnitOfWork : IUnitOfWork
     public ICommentRepository Comments => _comments ??= new CommentRepository(_context);
     public IUserRepository Users => _users ??= new UserRepository(_context);
 
-    public async Task<int> SaveChangesAsync()
+    public async Task<int> CompleteAsync()
     {
         return await _context.SaveChangesAsync();
     }

@@ -4,6 +4,8 @@ using Narratify.Data;
 using Narratify.Models.Entities;
 using Narratify.Repositories.Implementations;
 using Narratify.Repositories.Interfaces;
+using Narratify.Services.Implementations;
+using Narratify.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +19,11 @@ builder.Services.AddIdentity<User, IdentityRole>()
     .AddDefaultTokenProviders();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IArticleService, ArticleService>();
+builder.Services.AddScoped<ICommentService, CommentService>();
+builder.Services.AddTransient<IEmailService, EmailService>();
+builder.Services.AddScoped<IFileUploadService, FileUploadService>();
+builder.Services.AddSingleton<IMarkdownService, MarkdownService>();
 
 builder.Services.AddControllersWithViews();
 

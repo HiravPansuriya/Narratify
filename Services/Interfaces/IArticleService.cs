@@ -4,7 +4,7 @@ namespace Narratify.Services.Interfaces;
 
 public interface IArticleService
 {
-    Task<Article> GetArticleById(int id);
+    Task<Article?> GetArticleById(int id);
     Task<IEnumerable<Article>> GetAllArticles();
     Task<IEnumerable<Article>> GetPublishedArticles();
     Task<IEnumerable<Article>> GetUserArticles(string userId);
