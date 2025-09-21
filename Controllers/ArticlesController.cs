@@ -12,6 +12,17 @@ namespace Narratify.Controllers
             _articleService = articleService;
         }
 
+        public IActionResult Blog()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
         public async Task<IActionResult> Index()
         {
             var articles = await _articleService.GetAllArticles();

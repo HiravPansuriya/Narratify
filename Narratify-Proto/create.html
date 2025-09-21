@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Post - Narratify</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .editor-pane, .preview-pane {
+            height: calc(100vh - 12rem);
+        }
+        .preview-pane h1, .preview-pane h2 { font-weight: bold; }
+        .preview-pane h1 { font-size: 2.25rem; margin-bottom: 1rem;}
+        .preview-pane h2 { font-size: 1.875rem; margin-bottom: 0.75rem;}
+        .preview-pane p { margin-bottom: 1rem; }
+        .preview-pane ul { list-style: disc; margin-left: 1.5rem; margin-bottom: 1rem; }
+        .preview-pane a { color: #2563eb; text-decoration: underline; }
+        .preview-pane pre { background-color: #f3f4f6; padding: 1rem; border-radius: 0.375rem; margin-bottom: 1rem; }
+    </style>
+</head>
+<body class="bg-white text-gray-800">
+    <!-- Header -->
+    <header class="border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-4">
+                     <a href="index.html" class="text-2xl font-bold tracking-tight text-gray-900">Narratify</a>
+                     <span class="text-gray-400">/</span>
+                     <span class="text-gray-500">New Post</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button type="button" class="bg-gray-800 text-white hover:bg-gray-700 px-4 py-2 rounded-md text-sm font-medium">
+                        Publish
+                    </button>
+                    <a href="profile.html">
+                        <img class="h-8 w-8 rounded-full" src="https://i.pravatar.cc/32?u=2" alt="User profile">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div>
+            <input type="text" placeholder="Title of your post..." class="w-full text-3xl font-extrabold border-none focus:ring-0 p-0 placeholder-gray-400">
+        </div>
+
+        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Markdown Editor -->
+            <div>
+                <label for="editor" class="text-sm font-medium text-gray-500">Markdown</label>
+                <div class="mt-1">
+                    <textarea id="editor" name="editor" rows="25" class="editor-pane w-full p-4 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-800 focus:border-gray-800 sm:text-sm font-mono" placeholder="## Start writing your story..."></textarea>
+                </div>
+            </div>
+
+            <!-- Live Preview -->
+            <div>
+                <label for="preview" class="text-sm font-medium text-gray-500">Preview</label>
+                 <div id="preview" class="preview-pane mt-1 w-full p-4 border border-gray-200 bg-gray-50 rounded-md overflow-y-auto">
+                    <!-- Preview content will be rendered here -->
+                 </div>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        document.getElementById('editor').addEventListener('input', function() {
+            const markdownText = this.value;
+            document.getElementById('preview').innerHTML = marked.parse(markdownText);
+        });
+        // Initial parse for any default content
+        document.getElementById('preview').innerHTML = marked.parse(document.getElementById('editor').value);
+    </script>
+</body>
+</html>

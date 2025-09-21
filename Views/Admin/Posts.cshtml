@@ -1,0 +1,63 @@
+@{
+    ViewData["Title"] = "Admin Posts";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<header>
+    <h1 class="text-3xl font-extrabold tracking-tight text-gray-900">Posts</h1>
+</header>
+
+<!-- Posts Table -->
+<section class="mt-8">
+    <div class="bg-white shadow-sm rounded-lg border border-gray-200 overflow-hidden">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Author</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                    <th scope="col" class="relative px-6 py-3"><span class="sr-only">Actions</span></th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">The Essence of Swiss Design</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Herman Schmidt</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Published</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2025-09-15</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <a href="#" class="text-gray-600 hover:text-gray-900">View</a>
+                        <a href="#" class="ml-4 text-red-600 hover:text-red-900">Delete</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Markdown for Structured Writing</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Jane Doe</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Published</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2025-09-12</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <a href="#" class="text-gray-600 hover:text-gray-900">View</a>
+                        <a href="#" class="ml-4 text-red-600 hover:text-red-900">Delete</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">The Rise of Static Site Generators</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Klaus Richter</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Draft</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2025-09-10</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <a href="#" class="text-gray-600 hover:text-gray-900">View</a>
+                        <a href="#" class="ml-4 text-red-600 hover:text-red-900">Delete</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Narratify</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- App Container -->
+    <div class="min-h-screen">
+        <!-- Header -->
+        <header class="bg-white border-b border-gray-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <div class="flex-shrink-0">
+                        <a href="index.html" class="text-2xl font-bold tracking-tight text-gray-900">Narratify</a>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <a href="create.html" class="bg-gray-800 text-white hover:bg-gray-700 px-4 py-2 rounded-md text-sm font-medium">New Post</a>
+                         <a href="profile.html">
+                            <img class="h-8 w-8 rounded-full" src="https://i.pravatar.cc/32?u=2" alt="User profile">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <header>
+                <h1 class="text-3xl font-extrabold tracking-tight text-gray-900">Your Dashboard</h1>
+                <p class="mt-1 text-gray-500">Welcome back, Jane Doe.</p>
+            </header>
+
+            <!-- Stats Cards -->
+            <section class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                <div class="bg-white overflow-hidden shadow-sm rounded-lg border border-gray-200">
+                    <div class="p-5">
+                        <p class="text-sm font-medium text-gray-500 truncate">Total Posts</p>
+                        <p class="mt-1 text-3xl font-semibold text-gray-900">3</p>
+                    </div>
+                </div>
+                <div class="bg-white overflow-hidden shadow-sm rounded-lg border border-gray-200">
+                    <div class="p-5">
+                        <p class="text-sm font-medium text-gray-500 truncate">Total Views</p>
+                        <p class="mt-1 text-3xl font-semibold text-gray-900">12,408</p>
+                    </div>
+                </div>
+                <div class="bg-white overflow-hidden shadow-sm rounded-lg border border-gray-200">
+                    <div class="p-5">
+                        <p class="text-sm font-medium text-gray-500 truncate">Total Comments</p>
+                        <p class="mt-1 text-3xl font-semibold text-gray-900">87</p>
+                    </div>
+                </div>
+                <div class="bg-white overflow-hidden shadow-sm rounded-lg border border-gray-200">
+                    <div class="p-5">
+                        <p class="text-sm font-medium text-gray-500 truncate">Followers</p>
+                        <p class="mt-1 text-3xl font-semibold text-gray-900">1,234</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Blog Posts Table -->
+            <section class="mt-10">
+                 <h2 class="text-xl font-bold tracking-tight text-gray-900">Your Posts</h2>
+                 <div class="mt-4 bg-white shadow-sm rounded-lg border border-gray-200 overflow-hidden">
+                     <table class="min-w-full divide-y divide-gray-200">
+                         <thead class="bg-gray-50">
+                             <tr>
+                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Views</th>
+                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Comments</th>
+                                 <th scope="col" class="relative px-6 py-3">
+                                     <span class="sr-only">Actions</span>
+                                 </th>
+                             </tr>
+                         </thead>
+                         <tbody class="bg-white divide-y divide-gray-200">
+                             <tr>
+                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Markdown for Structured Writing</td>
+                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Published</span>
+                                 </td>
+                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">7,123</td>
+                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">45</td>
+                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                     <a href="#" class="text-gray-600 hover:text-gray-900">Edit</a>
+                                     <a href="#" class="ml-4 text-red-600 hover:text-red-900">Delete</a>
+                                 </td>
+                             </tr>
+                             <tr>
+                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Finding Simplicity in a Complex World</td>
+                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Published</span>
+                                 </td>
+                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">4,301</td>
+                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">31</td>
+                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                     <a href="#" class="text-gray-600 hover:text-gray-900">Edit</a>
+                                     <a href="#" class="ml-4 text-red-600 hover:text-red-900">Delete</a>
+                                 </td>
+                             </tr>
+                             <tr>
+                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">A Guide to Mindful Productivity</td>
+                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Draft</span>
+                                 </td>
+                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">984</td>
+                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">11</td>
+                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                     <a href="#" class="text-gray-600 hover:text-gray-900">Edit</a>
+                                     <a href="#" class="ml-4 text-red-600 hover:text-red-900">Delete</a>
+                                 </td>
+                             </tr>
+                         </tbody>
+                     </table>
+                 </div>
+            </section>
+        </main>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - Narratify</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-white text-gray-800">
+
+    <!-- App Container -->
+    <div class="min-h-screen">
+        <!-- Header -->
+        <header class="border-b border-gray-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <div class="flex-shrink-0">
+                        <a href="index.html" class="text-2xl font-bold tracking-tight text-gray-900">Narratify</a>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <a href="create.html" class="text-gray-500 hover:text-gray-900 text-sm font-medium">Write</a>
+                        <a href="dashboard.html" class="text-gray-500 hover:text-gray-900 text-sm font-medium">Dashboard</a>
+                        <a href="index.html" class="bg-gray-100 text-gray-800 hover:bg-gray-200 px-4 py-2 rounded-md text-sm font-medium">
+                            Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+            <!-- Profile Header -->
+            <section class="flex flex-col md:flex-row items-center md:items-start text-center md:text-left space-y-6 md:space-y-0 md:space-x-8">
+                <img class="h-32 w-32 rounded-full object-cover" src="https://i.pravatar.cc/128?u=2" alt="User profile picture">
+                <div class="flex-1">
+                    <h1 class="text-4xl font-extrabold tracking-tight text-gray-900">Jane Doe</h1>
+                    <p class="mt-2 text-lg text-gray-500">Designer, writer, and minimalist. Exploring the intersection of technology and creativity. Passionate about clean aesthetics and structured thinking.</p>
+                </div>
+            </section>
+            
+            <!-- Published Articles -->
+            <section class="mt-12 border-t border-gray-200 pt-12">
+                <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-gray-900">Published Articles</h2>
+                <div class="mt-8 space-y-8">
+                    <!-- Article 1 -->
+                    <div class="flex flex-col">
+                         <p class="text-sm text-gray-500">September 12, 2025</p>
+                         <a href="blog.html" class="block mt-2">
+                             <h3 class="text-xl font-semibold text-gray-900 hover:text-gray-700">Markdown for Structured Writing</h3>
+                             <p class="mt-2 text-base text-gray-500">Learn how a simple text format can revolutionize your writing workflow and bring structure to your thoughts. A deep dive into the syntax and benefits.</p>
+                         </a>
+                    </div>
+                    <!-- Article 2 -->
+                    <div class="flex flex-col">
+                         <p class="text-sm text-gray-500">August 28, 2025</p>
+                         <a href="blog.html" class="block mt-2">
+                             <h3 class="text-xl font-semibold text-gray-900 hover:text-gray-700">Finding Simplicity in a Complex World</h3>
+                             <p class="mt-2 text-base text-gray-500">My journey towards minimalism, both in design and in life. Practical tips for decluttering your physical and digital spaces for better focus.</p>
+                         </a>
+                    </div>
+                    <!-- Article 3 -->
+                    <div class="flex flex-col">
+                         <p class="text-sm text-gray-500">July 05, 2025</p>
+                         <a href="blog.html" class="block mt-2">
+                             <h3 class="text-xl font-semibold text-gray-900 hover:text-gray-700">A Guide to Mindful Productivity</h3>
+                             <p class="mt-2 text-base text-gray-500">Stop multitasking and start single-tasking. How to achieve more by doing less, and why focus is the new superpower in the digital age.</p>
+                         </a>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+</body>
+</html>

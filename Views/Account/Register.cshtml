@@ -1,37 +1,71 @@
-@model Narratify.Models.ViewModels.RegisterViewModel
-
 @{
     ViewData["Title"] = "Register";
+    Layout = null;
 }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Narratify</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
 
-<h2>@ViewData["Title"]</h2>
+    <div class="min-h-screen flex flex-col items-center justify-center">
+        <div class="text-center mb-8">
+            <a asp-controller="Home" asp-action="Index" class="text-3xl font-bold tracking-tight text-gray-900">Narratify</a>
+        </div>
+        
+        <div class="w-full max-w-sm bg-white p-8 border border-gray-200 rounded-lg shadow-sm">
+            <h2 class="text-2xl font-bold text-center text-gray-900">Create your account</h2>
+            <p class="text-center text-gray-500 mt-2">Start your writing journey.</p>
 
-<div class="row">
-    <div class="col-md-4">
-        <form asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post">
-            <h4>Create a new account.</h4>
-            <hr />
-            <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Email"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Password"></label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ConfirmPassword"></label>
-                <input asp-for="ConfirmPassword" class="form-control" />
-                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-            </div>
-            <button type="submit" class="btn btn-primary">Register</button>
-        </form>
+            <form class="mt-8 space-y-6" method="post">
+                <div>
+                    <label for="displayName" class="text-sm font-medium text-gray-700">Display Name</label>
+                    <div class="mt-1">
+                        <input id="displayName" name="displayName" type="text" autocomplete="name" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-800 focus:border-gray-800 sm:text-sm">
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="email" class="text-sm font-medium text-gray-700">Email address</label>
+                    <div class="mt-1">
+                        <input id="email" name="email" type="email" autocomplete="email" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-800 focus:border-gray-800 sm:text-sm">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="password" class="text-sm font-medium text-gray-700">Password</label>
+                    <div class="mt-1">
+                        <input id="password" name="password" type="password" autocomplete="new-password" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-800 focus:border-gray-800 sm:text-sm">
+                    </div>
+                </div>
+
+                <div>
+                    <button type="submit"
+                        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800">
+                        Register
+                    </button>
+                </div>
+            </form>
+            
+            <p class="mt-6 text-center text-sm text-gray-500">
+                Already have an account?
+                <a asp-controller="Account" asp-action="Login" class="font-medium text-gray-800 hover:text-gray-600">
+                    Login
+                </a>
+            </p>
+        </div>
     </div>
-</div>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
+</body>
+</html>

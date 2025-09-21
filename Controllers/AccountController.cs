@@ -73,6 +73,12 @@ namespace Narratify.Controllers
         }
 
         [HttpGet]
+        public IActionResult Profile()
+        {
+            return View();
+        }
+
+        [HttpGet]
         public IActionResult Manage()
         {
             return View();
