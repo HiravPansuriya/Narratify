@@ -64,6 +64,9 @@ public class Article
 
     [ForeignKey("AuthorId")] public virtual User Author { get; set; } = null!;
 
+    public int? CategoryId { get; set; }
+    public virtual Category? Category { get; set; }
+
     // Navigation Properties
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
     public virtual ICollection<ArticleCategory> ArticleCategories { get; set; } = new List<ArticleCategory>();
@@ -117,24 +120,37 @@ public class Article
             var wordCount = Content.Split(new[] { ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries)
                 .Length;
             ReadingTimeMinutes =
-                Math.Max(1, (int)Math.Ceiling(wordCount / 200.0)); // Average reading speed: 200 words/min
+                Math.Max(1, (int)Math.Ceiling(wordCount / 200.0));
         }
     }
 
     public void GenerateSlug()
     {
-        if (!string.IsNullOrEmpty(Title))
-            Slug = Title.ToLowerInvariant()
-                .Replace(" ", "-")
-                .Replace("'", "")
-                .Replace("\"", "")
-                .Replace(".", "")
-                .Replace(",", "")
-                .Replace("!", "")
-                .Replace("?", "")
-                .Replace(":", "")
-                .Replace(";", "")
-                .Trim('-');
+        if (string.IsNullOrEmpty(Title))
+        {
+            Slug = string.Empty;
+            return;
+        }
+
+        // Take the first 5 words from the title
+        string[] words = Title.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+        string titleToSlug = string.Join(" ", words.Take(5));
+
+        // Generate the slug from the truncated title
+        string baseSlug = titleToSlug.ToLowerInvariant()
+            .Replace("'", "")
+            .Replace("\"", "")
+            .Replace(".", "")
+            .Replace(",", "")
+            .Replace("!", "")
+            .Replace("?", "")
+            .Replace(":", "")
+            .Replace(";", "")
+            .Replace(" ", "-")
+            .Trim('-');
+
+        long timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        Slug = $"{baseSlug}-{timestamp}";
     }
 
     public void Publish()
@@ -164,6 +180,4 @@ public enum ArticleStatus
     [Display(Name = "Draft")] Draft = 0,
 
     [Display(Name = "Published")] Published = 1,
-
-    [Display(Name = "Archived")] Archived = 2
 }

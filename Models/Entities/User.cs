@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
+using Narratify.Models.Entities;
+using Narratify.Models.Enums;
 
 namespace Narratify.Models.Entities;
 
@@ -24,13 +26,6 @@ public class User : IdentityUser
     [Display(Name = "Profile Picture")]
     public string? ProfilePictureUrl { get; set; }
 
-    [StringLength(100)]
-    [Display(Name = "Website")]
-    public string? Website { get; set; }
-
-    [StringLength(100)]
-    [Display(Name = "Location")]
-    public string? Location { get; set; }
 
     /* <---- Account Metadata ----> */
     [Display(Name = "Date Joined")] public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
@@ -49,10 +44,23 @@ public class User : IdentityUser
     [Display(Name = "Initials")]
     public string Initials => $"{FirstName.FirstOrDefault()}{LastName.FirstOrDefault()}".ToUpper();
 
+    public UserRole Role { get; set; } = UserRole.User;
+
+    public UserStatus UserStatus { get; set; } = UserStatus.Active;
+    
+    public DateTime? LastLoginAt { get; set; }
+
+    public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
+
     public string GetProfilePictureOrDefault()
     {
-        return !string.IsNullOrEmpty(ProfilePictureUrl)
-            ? ProfilePictureUrl
-            : $"https://ui-avatars.com/api/?name={FirstName}+{LastName}&background=007bff&color=fff&size=150";
+        if (!string.IsNullOrEmpty(ProfilePictureUrl))
+        {
+            return ProfilePictureUrl;
+        }
+        
+        // Generate initials-based avatar using UI Avatars service
+        var initials = System.Uri.EscapeDataString(Initials);
+        return $"https://ui-avatars.com/api/?name={initials}&background=667eea&color=fff&size=150";
     }
 }

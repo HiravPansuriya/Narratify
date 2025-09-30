@@ -1,13 +1,15 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Narratify.Models.ViewModels
+namespace Narratify.Models.ViewModels.Articles
 {
     public class CreateArticleViewModel
     {
         [Required]
-        public string Title { get; set; }
+        public required string Title { get; set; }
 
         [Required]
-        public string Content { get; set; }
+        public required string Content { get; set; }
+
+        public bool IsPublished { get; set; } = false;
     }
 }

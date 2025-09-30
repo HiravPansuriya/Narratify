@@ -5,15 +5,16 @@ namespace Narratify.Models.Entities;
 
 public class ArticleCategory
 {
-    [Key] public int Id { get; set; }
+    public int ArticleId { get; set; }
+    public int CategoryId { get; set; }
 
-    [Required] public int ArticleId { get; set; }
-
-    [ForeignKey("ArticleId")] public virtual Article Article { get; set; } = null!;
-
-    [Required] public int CategoryId { get; set; }
-
-    [ForeignKey("CategoryId")] public virtual Category Category { get; set; } = null!;
-
+    // Extra columns present in migration
+    public int Id { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    [ForeignKey(nameof(ArticleId))]
+    public virtual Article Article { get; set; } = null!;
+
+    [ForeignKey(nameof(CategoryId))]
+    public virtual Category Category { get; set; } = null!;
 }

@@ -13,8 +13,6 @@ public class Comment
     [Display(Name = "Comment")]
     public string Content { get; set; } = string.Empty;
 
-    [Display(Name = "HTML Content")] public string? HtmlContent { get; set; }
-
     /* <---- User Information ----> */
     [Display(Name = "User ID")] public string? UserId { get; set; }
 
