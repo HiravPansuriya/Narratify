@@ -10,10 +10,9 @@ public class ApplicationDbContext : IdentityDbContext<User>
     {
     }
 
+    public override DbSet<User> Users { get; set; } = null!;
     public DbSet<Article> Articles { get; set; } = null!;
-    public DbSet<Category> Categories { get; set; } = null!;
     public DbSet<Comment> Comments { get; set; } = null!;
-    public DbSet<ArticleCategory> ArticleCategories { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -33,21 +32,15 @@ public class ApplicationDbContext : IdentityDbContext<User>
 
         builder.Entity<Comment>()
             .HasOne(c => c.User)
-            .WithMany()
+            .WithMany(u => u.Comments)
             .HasForeignKey(c => c.UserId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        // Configure self-referencing relationship for comment replies
+        builder.Entity<Comment>()
+            .HasOne(c => c.ParentComment)
+            .WithMany(c => c.Replies)
+            .HasForeignKey(c => c.ParentCommentId)
             .OnDelete(DeleteBehavior.NoAction);
-
-        builder.Entity<ArticleCategory>()
-            .HasKey(ac => new { ac.ArticleId, ac.CategoryId });
-
-        builder.Entity<ArticleCategory>()
-            .HasOne(ac => ac.Article)
-            .WithMany(a => a.ArticleCategories)
-            .HasForeignKey(ac => ac.ArticleId);
-
-        builder.Entity<ArticleCategory>()
-            .HasOne(ac => ac.Category)
-            .WithMany(c => c.ArticleCategories)
-            .HasForeignKey(ac => ac.CategoryId);
     }
 }
