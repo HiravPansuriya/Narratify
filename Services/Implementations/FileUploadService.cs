@@ -1,39 +1,88 @@
-
 using Narratify.Services.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace Narratify.Services.Implementations
 {
     public class FileUploadService : IFileUploadService
     {
-        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IWebHostEnvironment _environment;
+        private readonly ILogger<FileUploadService> _logger;
 
-        public FileUploadService(IWebHostEnvironment webHostEnvironment)
+        public FileUploadService(IWebHostEnvironment environment, ILogger<FileUploadService> logger)
         {
-            _webHostEnvironment = webHostEnvironment;
+            _environment = environment;
+            _logger = logger;
         }
 
         public async Task<string?> UploadFileAsync(IFormFile file, string directory)
         {
             if (file == null || file.Length == 0)
+                return null;
+
+            // Validate file type (only allow images)
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
+            var fileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
+            
+            if (!allowedExtensions.Contains(fileExtension))
             {
+                _logger.LogWarning("Invalid file extension: {Extension}", fileExtension);
                 return null;
             }
 
-            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, directory);
-            if (!Directory.Exists(uploadsFolder))
+            // Validate file size (max 5MB)
+            const long maxFileSize = 5 * 1024 * 1024; // 5MB
+            if (file.Length > maxFileSize)
             {
-                Directory.CreateDirectory(uploadsFolder);
+                _logger.LogWarning("File size too large: {Size} bytes", file.Length);
+                return null;
             }
 
-            var uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
-            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            try
             {
-                await file.CopyToAsync(fileStream);
+                // Create uploads directory if it doesn't exist
+                var uploadsPath = Path.Combine(_environment.WebRootPath, "uploads", directory);
+                Directory.CreateDirectory(uploadsPath);
+
+                // Generate unique filename
+                var fileName = $"{Guid.NewGuid()}{fileExtension}";
+                var filePath = Path.Combine(uploadsPath, fileName);
+
+                // Save file
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+
+                // Return the relative path for storage in database
+                return $"/uploads/{directory}/{fileName}";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error uploading file: {FileName}", file.FileName);
+                return null;
+            }
+        }
+
+        public bool DeleteFile(string filePath)
+        {
+            if (string.IsNullOrEmpty(filePath))
+                return false;
+
+            try
+            {
+                var fullPath = Path.Combine(_environment.WebRootPath, filePath.TrimStart('/'));
+                if (File.Exists(fullPath))
+                {
+                    File.Delete(fullPath);
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting file: {FilePath}", filePath);
             }
 
-            return $"/{directory}/{uniqueFileName}";
+            return false;
         }
     }
 }

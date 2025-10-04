@@ -1,46 +1,146 @@
-@{
+@using Narratify.Models.ViewModels.Account
+@model ProfileViewModel
+
+@{ 
     ViewData["Title"] = "User Profile";
-    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
-    <!-- Profile Header -->
-    <section class="flex flex-col md:flex-row items-center md:items-start text-center md:text-left space-y-6 md:space-y-0 md:space-x-8">
-        <img class="h-32 w-32 rounded-full object-cover" src="https://i.pravatar.cc/128?u=2" alt="User profile picture">
-        <div class="flex-1">
-            <h1 class="text-4xl font-extrabold tracking-tight text-gray-900">Jane Doe</h1>
-            <p class="mt-2 text-lg text-gray-500">Designer, writer, and minimalist. Exploring the intersection of technology and creativity. Passionate about clean aesthetics and structured thinking.</p>
-        </div>
-    </section>
-    
-    <!-- Published Articles -->
-    <section class="mt-12 border-t border-gray-200 pt-12">
-        <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-gray-900">Published Articles</h2>
-        <div class="mt-8 space-y-8">
-            <!-- Article 1 -->
-            <div class="flex flex-col">
-                 <p class="text-sm text-gray-500">September 12, 2025</p>
-                 <a asp-controller="Articles" asp-action="Blog" class="block mt-2">
-                     <h3 class="text-xl font-semibold text-gray-900 hover:text-gray-700">Markdown for Structured Writing</h3>
-                     <p class="mt-2 text-base text-gray-500">Learn how a simple text format can revolutionize your writing workflow and bring structure to your thoughts. A deep dive into the syntax and benefits.</p>
-                 </a>
+@await Html.PartialAsync("_Alert")
+
+<!-- Profile Header -->
+<section class="bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 border-b border-gray-200 py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row items-center md:items-start text-center md:text-left space-y-6 md:space-y-0 md:space-x-8">
+            <div class="relative">
+                <img class="h-32 w-32 rounded-full object-cover border-4 border-white shadow-xl" 
+                     src="@Model.User.GetProfilePictureOrDefault()" 
+                     alt="@Model.User.DisplayName's profile picture">
+                <div class="absolute -bottom-2 -right-2 w-10 h-10 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center border-4 border-white">
+                    <i class="fas fa-feather-alt text-white text-sm"></i>
+                </div>
             </div>
-            <!-- Article 2 -->
-            <div class="flex flex-col">
-                 <p class="text-sm text-gray-500">August 28, 2025</p>
-                 <a asp-controller="Articles" asp-action="Blog" class="block mt-2">
-                     <h3 class="text-xl font-semibold text-gray-900 hover:text-gray-700">Finding Simplicity in a Complex World</h3>
-                     <p class="mt-2 text-base text-gray-500">My journey towards minimalism, both in design and in life. Practical tips for decluttering your physical and digital spaces for better focus.</p>
-                 </a>
-            </div>
-            <!-- Article 3 -->
-            <div class="flex flex-col">
-                 <p class="text-sm text-gray-500">July 05, 2025</p>
-                 <a asp-controller="Articles" asp-action="Blog" class="block mt-2">
-                     <h3 class="text-xl font-semibold text-gray-900 hover:text-gray-700">A Guide to Mindful Productivity</h3>
-                     <p class="mt-2 text-base text-gray-500">Stop multitasking and start single-tasking. How to achieve more by doing less, and why focus is the new superpower in the digital age.</p>
-                 </a>
+            <div class="flex-1">
+                <h1 class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                    @Model.User.DisplayName
+                </h1>
+                <p class="mt-3 text-lg text-gray-600 leading-relaxed">@(Model.User.Bio ?? "Passionate writer sharing stories with the world.")</p>
+                <div class="mt-6 flex flex-col sm:flex-row gap-4">
+                    <a asp-controller="Account" asp-action="EditProfile" 
+                       class="btn-primary text-white px-6 py-3 rounded-xl font-semibold flex items-center justify-center space-x-2">
+                        <i class="fas fa-edit"></i>
+                        <span>Edit Profile</span>
+                    </a>
+                    <a asp-controller="Articles" asp-action="Create" 
+                       class="bg-white text-gray-700 border-2 border-gray-200 hover:border-purple-300 px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center space-x-2">
+                        <i class="fas fa-plus"></i>
+                        <span>New Article</span>
+                    </a>
+                </div>
             </div>
         </div>
-    </section>
-</main>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="bg-white py-8 border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-3 gap-6 text-center">
+            <div class="bg-gradient-to-br from-purple-50 to-blue-50 rounded-2xl p-6 border border-purple-200">
+                <div class="text-3xl font-bold text-purple-600">@(Model.User.Articles?.Count(a => a.Status == Narratify.Models.Entities.ArticleStatus.Published) ?? 0)</div>
+                <div class="text-sm text-gray-600 mt-1">Published Articles</div>
+            </div>
+            <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
+                <div class="text-3xl font-bold text-blue-600">@(Model.User.Articles?.Count(a => a.Status == Narratify.Models.Entities.ArticleStatus.Draft) ?? 0)</div>
+                <div class="text-sm text-gray-600 mt-1">Draft Articles</div>
+            </div>
+            <div class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl p-6 border border-indigo-200">
+                <div class="text-3xl font-bold text-indigo-600">@(Model.User.CreatedAt.ToString("MMM yyyy"))</div>
+                <div class="text-sm text-gray-600 mt-1">Member Since</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Articles Section -->
+<section class="bg-white py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between mb-8">
+            <h2 class="text-3xl font-bold text-gray-900 flex items-center space-x-3">
+                <i class="fas fa-book-open text-purple-500"></i>
+                <span>My Articles</span>
+            </h2>
+            <a asp-controller="Articles" asp-action="Create" 
+               class="btn-primary text-white px-6 py-3 rounded-xl font-semibold flex items-center space-x-2">
+                <i class="fas fa-plus"></i>
+                <span>Write New Article</span>
+            </a>
+        </div>
+
+        @if (Model.User.Articles != null && Model.User.Articles.Any())
+        {
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                @foreach (var article in Model.User.Articles.OrderByDescending(a => a.CreatedAt))
+                {
+                    <div class="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-lg border-2 border-gray-100 hover:border-purple-200 transition-all duration-300 overflow-hidden group">
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-sm text-gray-500">
+                                    @(article.PublishedAt?.ToString("MMMM dd, yyyy") ?? article.CreatedAt.ToString("MMMM dd, yyyy"))
+                                </span>
+                                @if (article.Status == Narratify.Models.Entities.ArticleStatus.Draft)
+                                {
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700 border border-gray-200">
+                                        <i class="fas fa-file-alt mr-1"></i>
+                                        Draft
+                                    </span>
+                                }
+                                else if (article.Status == Narratify.Models.Entities.ArticleStatus.Published)
+                                {
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700 border border-green-200">
+                                        <i class="fas fa-globe mr-1"></i>
+                                        Published
+                                    </span>
+                                }
+                            </div>
+                            
+                            <a href="/Articles/@article.Slug" class="block group-hover:text-purple-600 transition-colors duration-300">
+                                <h3 class="text-xl font-bold text-gray-900 mb-3 line-clamp-2">@article.Title</h3>
+                                <p class="text-gray-600 text-sm leading-relaxed line-clamp-3">@(article.Summary ?? "No summary available.")</p>
+                            </a>
+                            
+                            <div class="flex items-center justify-between mt-6 pt-4 border-t border-gray-100">
+                                <div class="flex items-center space-x-4 text-sm text-gray-500">
+                                    <span class="flex items-center space-x-1">
+                                        <i class="fas fa-eye"></i>
+                                        <span>@(article?.ViewCount ?? 0)</span>
+                                    </span>
+                                    <span class="flex items-center space-x-1">
+                                        <i class="fas fa-comments"></i>
+                                        <span>@(article.Comments?.Count ?? 0)</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-16">
+                <div class="bg-gradient-to-br from-purple-50 to-blue-50 rounded-2xl p-12 border-2 border-dashed border-purple-200">
+                    <div class="w-20 h-20 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-feather-alt text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">No articles yet</h3>
+                    <p class="text-gray-600 mb-8 max-w-md mx-auto">Start sharing your stories with the world. Your first article is just a click away.</p>
+                    <a asp-controller="Articles" asp-action="Create" 
+                       class="btn-primary text-white px-8 py-4 rounded-xl font-semibold text-lg inline-flex items-center space-x-2">
+                        <i class="fas fa-plus"></i>
+                        <span>Write Your First Article</span>
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+</section>

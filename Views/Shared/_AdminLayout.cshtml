@@ -33,17 +33,20 @@
                 </a>
             </nav>
             <div class="p-4 border-t border-gray-200">
-                <a asp-controller="Account" asp-action="Logout" class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 flex items-center px-4 py-2 text-sm font-medium rounded-md">Logout</a>
+                <form asp-controller="Account" asp-action="Logout" method="post">
+                    <button type="submit" class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 flex items-center px-4 py-2 text-sm font-medium rounded-md w-full text-left">
+                        Logout
+                    </button>
+                </form>
             </div>
         </div>
 
         <!-- Main Content -->
         <div class="flex-1">
-            <main role="main" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                 @RenderBody()
+            <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                @RenderBody()
             </main>
         </div>
     </div>
-     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

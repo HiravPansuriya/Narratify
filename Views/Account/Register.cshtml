@@ -1,71 +1,180 @@
+@model Narratify.Models.ViewModels.Account.RegisterViewModel
 @{
     ViewData["Title"] = "Register";
-    Layout = null;
+    Layout = null; // Full page layout for register
 }
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - Narratify</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Narratify</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            900: '#1e3a8a'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800">
-
-    <div class="min-h-screen flex flex-col items-center justify-center">
-        <div class="text-center mb-8">
-            <a asp-controller="Home" asp-action="Index" class="text-3xl font-bold tracking-tight text-gray-900">Narratify</a>
-        </div>
-        
-        <div class="w-full max-w-sm bg-white p-8 border border-gray-200 rounded-lg shadow-sm">
-            <h2 class="text-2xl font-bold text-center text-gray-900">Create your account</h2>
-            <p class="text-center text-gray-500 mt-2">Start your writing journey.</p>
-
-            <form class="mt-8 space-y-6" method="post">
-                <div>
-                    <label for="displayName" class="text-sm font-medium text-gray-700">Display Name</label>
-                    <div class="mt-1">
-                        <input id="displayName" name="displayName" type="text" autocomplete="name" required
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-800 focus:border-gray-800 sm:text-sm">
-                    </div>
+<body class="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 py-8">
+    <div class="max-w-md w-full space-y-8">
+        <div class="glass-effect rounded-2xl p-8 shadow-2xl">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <div class="mx-auto h-16 w-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mb-4">
+                    <i class="fas fa-user-plus text-white text-2xl"></i>
                 </div>
+                <h2 class="text-3xl font-bold text-white mb-2">Join Narratify</h2>
+                <p class="text-white text-opacity-80">Create your account and start writing</p>
+            </div>
+
+            <!-- Alert Messages -->
+            <div class="mb-6">
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="p-4 rounded-xl bg-red-500 bg-opacity-20 border border-red-300 border-opacity-30 mb-4">
+                        <div class="flex items-center">
+                            <i class="fas fa-exclamation-circle text-red-200 mr-3"></i>
+                            <p class="text-red-100 text-sm">@TempData["ErrorMessage"]</p>
+                        </div>
+                    </div>
+                }
                 
-                <div>
-                    <label for="email" class="text-sm font-medium text-gray-700">Email address</label>
-                    <div class="mt-1">
-                        <input id="email" name="email" type="email" autocomplete="email" required
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-800 focus:border-gray-800 sm:text-sm">
+                @if (ViewData.ModelState.ErrorCount > 0)
+                {
+                    <div class="p-4 rounded-xl bg-red-500 bg-opacity-20 border border-red-300 border-opacity-30 mb-4">
+                        <div class="flex items-start">
+                            <i class="fas fa-exclamation-triangle text-red-200 mr-3 mt-0.5"></i>
+                            <div class="text-red-100 text-sm">
+                                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                                {
+                                    <p class="mb-1">@error.ErrorMessage</p>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Register Form -->
+            <form asp-action="Register" method="post" class="space-y-4">
+                
+                <!-- Name Fields Row -->
+                <div class="grid grid-cols-2 gap-4">
+                    <!-- First Name -->
+                    <div>
+                        <label asp-for="FirstName" class="block text-sm font-medium text-white mb-2">
+                            <i class="fas fa-user mr-2"></i>First Name
+                        </label>
+                        <input asp-for="FirstName" 
+                               class="w-full px-4 py-3 bg-white bg-opacity-20 border border-white border-opacity-30 rounded-xl text-white placeholder-white placeholder-opacity-70 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 focus:border-transparent transition-all duration-300" 
+                               placeholder="First name" />
+                        <span asp-validation-for="FirstName" class="text-red-200 text-xs mt-1 block"></span>
+                    </div>
+
+                    <!-- Last Name -->
+                    <div>
+                        <label asp-for="LastName" class="block text-sm font-medium text-white mb-2">
+                            <i class="fas fa-user mr-2"></i>Last Name
+                        </label>
+                        <input asp-for="LastName" 
+                               class="w-full px-4 py-3 bg-white bg-opacity-20 border border-white border-opacity-30 rounded-xl text-white placeholder-white placeholder-opacity-70 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 focus:border-transparent transition-all duration-300" 
+                               placeholder="Last name" />
+                        <span asp-validation-for="LastName" class="text-red-200 text-xs mt-1 block"></span>
                     </div>
                 </div>
 
+                <!-- Email Field -->
                 <div>
-                    <label for="password" class="text-sm font-medium text-gray-700">Password</label>
-                    <div class="mt-1">
-                        <input id="password" name="password" type="password" autocomplete="new-password" required
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-800 focus:border-gray-800 sm:text-sm">
-                    </div>
+                    <label asp-for="Email" class="block text-sm font-medium text-white mb-2">
+                        <i class="fas fa-envelope mr-2"></i>Email Address
+                    </label>
+                    <input asp-for="Email" 
+                           class="w-full px-4 py-3 bg-white bg-opacity-20 border border-white border-opacity-30 rounded-xl text-white placeholder-white placeholder-opacity-70 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 focus:border-transparent transition-all duration-300" 
+                           placeholder="Enter your email address" />
+                    <span asp-validation-for="Email" class="text-red-200 text-xs mt-1 block"></span>
                 </div>
 
+                <!-- Password Field -->
                 <div>
-                    <button type="submit"
-                        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800">
-                        Register
+                    <label asp-for="Password" class="block text-sm font-medium text-white mb-2">
+                        <i class="fas fa-lock mr-2"></i>Password
+                    </label>
+                    <input asp-for="Password" 
+                           class="w-full px-4 py-3 bg-white bg-opacity-20 border border-white border-opacity-30 rounded-xl text-white placeholder-white placeholder-opacity-70 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 focus:border-transparent transition-all duration-300" 
+                           placeholder="Create a password (min. 6 characters)" />
+                    <span asp-validation-for="Password" class="text-red-200 text-xs mt-1 block"></span>
+                </div>
+
+                <!-- Confirm Password Field -->
+                <div>
+                    <label asp-for="ConfirmPassword" class="block text-sm font-medium text-white mb-2">
+                        <i class="fas fa-lock mr-2"></i>Confirm Password
+                    </label>
+                    <input asp-for="ConfirmPassword" 
+                           class="w-full px-4 py-3 bg-white bg-opacity-20 border border-white border-opacity-30 rounded-xl text-white placeholder-white placeholder-opacity-70 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 focus:border-transparent transition-all duration-300" 
+                           placeholder="Confirm your password" />
+                    <span asp-validation-for="ConfirmPassword" class="text-red-200 text-xs mt-1 block"></span>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="pt-4">
+                    <button type="submit" 
+                            class="w-full btn-primary text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
+                        <i class="fas fa-user-plus mr-2"></i>Create Account
                     </button>
                 </div>
             </form>
-            
-            <p class="mt-6 text-center text-sm text-gray-500">
-                Already have an account?
-                <a asp-controller="Account" asp-action="Login" class="font-medium text-gray-800 hover:text-gray-600">
-                    Login
-                </a>
-            </p>
+
+            <!-- Login Link -->
+            <div class="mt-8 text-center">
+                <p class="text-white text-opacity-80">
+                    Already have an account?
+                    <a asp-action="Login" class="text-white font-semibold hover:text-opacity-80 transition-colors duration-300">
+                        Sign in here
+                    </a>
+                </p>
+            </div>
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
 </body>
 </html>

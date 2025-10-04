@@ -1,84 +1,233 @@
-@{
+@using Narratify.Models.ViewModels.Articles
+@model CreateArticleViewModel
+
+@{ 
     ViewData["Title"] = "Create New Post";
-    Layout = null;
 }
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create New Post - Narratify</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        .editor-pane, .preview-pane {
-            height: calc(100vh - 12rem);
-        }
-        .preview-pane h1, .preview-pane h2 { font-weight: bold; }
-        .preview-pane h1 { font-size: 2.25rem; margin-bottom: 1rem;}
-        .preview-pane h2 { font-size: 1.875rem; margin-bottom: 0.75rem;}
-        .preview-pane p { margin-bottom: 1rem; }
-        .preview-pane ul { list-style: disc; margin-left: 1.5rem; margin-bottom: 1rem; }
-        .preview-pane a { color: #2563eb; text-decoration: underline; }
-        .preview-pane pre { background-color: #f3f4f6; padding: 1rem; border-radius: 0.375rem; margin-bottom: 1rem; }
-    </style>
-</head>
-<body class="bg-white text-gray-800">
-    <!-- Header -->
-    <header class="border-b border-gray-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <div class="flex items-center space-x-4">
-                     <a asp-controller="Home" asp-action="Index" class="text-2xl font-bold tracking-tight text-gray-900">Narratify</a>
-                     <span class="text-gray-400">/</span>
-                     <span class="text-gray-500">New Post</span>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <button type="button" class="bg-gray-800 text-white hover:bg-gray-700 px-4 py-2 rounded-md text-sm font-medium">
-                        Publish
+
+@await Html.PartialAsync("_Alert")
+
+<!-- Create Post Header -->
+<section class="bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center py-4">
+            <div class="flex items-center space-x-4">
+                <a asp-controller="Home" asp-action="Index" class="flex items-center space-x-2 text-gray-600 hover:text-purple-600">
+                    <div class="w-8 h-8 bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-feather-alt text-white text-sm"></i>
+                    </div>
+                    <span class="text-xl font-bold">Narratify</span>
+                </a>
+                <span class="text-gray-400">/</span>
+                <span class="text-gray-600 font-medium">Create New Post</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-3">
+                    <button type="submit" onclick="setPublishStatus(false);" form="createArticleForm" 
+                            class="bg-gray-100 text-gray-700 hover:bg-gray-200 px-6 py-2.5 rounded-xl font-medium transition-all duration-300 flex items-center space-x-2 border border-gray-200">
+                        <i class="fas fa-save"></i>
+                        <span>Save as Draft</span>
                     </button>
-                    <a asp-controller="Account" asp-action="Profile">
-                        <img class="h-8 w-8 rounded-full" src="https://i.pravatar.cc/32?u=2" alt="User profile">
-                    </a>
+                    <button type="submit" onclick="setPublishStatus(true);" form="createArticleForm" 
+                            class="btn-primary text-white px-6 py-2.5 rounded-xl font-medium flex items-center space-x-2">
+                        <i class="fas fa-globe"></i>
+                        <span>Publish</span>
+                    </button>
+                </div>
+                <div class="flex items-center">
+                    <img class="h-10 w-10 rounded-full border-2 border-purple-200" 
+                         src="@(ViewBag.ProfilePictureUrl ?? "https://ui-avatars.com/api/?name=User&background=667eea&color=fff")" 
+                         alt="Your profile">
                 </div>
             </div>
         </div>
-    </header>
+    </div>
+</section>
 
-    <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div>
-            <input type="text" placeholder="Title of your post..." class="w-full text-3xl font-extrabold border-none focus:ring-0 p-0 placeholder-gray-400">
-        </div>
+<!-- Main Editor -->
+<section class="bg-white min-h-screen py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <form id="createArticleForm" asp-controller="Articles" asp-action="Create" method="post">
+            <input type="hidden" asp-for="IsPublished" id="isPublishedInput" />
+            
+            <!-- Validation Errors -->
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="mb-6 bg-red-50 border border-red-200 rounded-xl p-4">
+                    <div class="flex items-center mb-3">
+                        <i class="fas fa-exclamation-circle text-red-500 mr-2"></i>
+                        <h3 class="font-semibold text-red-800">Please fix the following errors:</h3>
+                    </div>
+                    <div asp-validation-summary="All" class="text-red-600 text-sm space-y-1"></div>
+                </div>
+            }
 
-        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-8">
-            <!-- Markdown Editor -->
-            <div>
-                <label for="editor" class="text-sm font-medium text-gray-500">Markdown</label>
-                <div class="mt-1">
-                    <textarea id="editor" name="editor" rows="25" class="editor-pane w-full p-4 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-800 focus:border-gray-800 sm:text-sm font-mono" placeholder="## Start writing your story..."></textarea>
+            <!-- Title Input -->
+            <div class="mb-8">
+                <input asp-for="Title" type="text" 
+                       placeholder="Enter your article title..." 
+                       class="w-full text-4xl md:text-5xl font-bold border-none focus:ring-0 p-0 placeholder-gray-400 bg-transparent focus:outline-none">
+                <span asp-validation-for="Title" class="text-red-500 text-sm block mt-2"></span>
+            </div>
+
+            <!-- Writing Interface -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Markdown Editor -->
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <label class="text-lg font-semibold text-gray-700 flex items-center space-x-2">
+                            <i class="fas fa-code text-purple-500"></i>
+                            <span>Write in Markdown</span>
+                        </label>
+                        <div class="flex items-center space-x-2 text-sm text-gray-500">
+                            <i class="fab fa-markdown"></i>
+                            <span>Markdown supported</span>
+                        </div>
+                    </div>
+                    
+                    <div class="relative">
+                        <textarea asp-for="Content" id="editor" rows="30" 
+                                  class="w-full p-6 border-2 border-gray-200 rounded-2xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent font-mono text-sm leading-relaxed resize-none" 
+                                  placeholder="# Start writing your story...
+
+## Use markdown to format your content
+
+- Create lists
+- **Bold text**
+- *Italic text*
+- [Links](https://example.com)
+- And much more!
+
+Share your thoughts, experiences, and insights with the world..."></textarea>
+                        <span asp-validation-for="Content" class="text-red-500 text-sm block mt-2"></span>
+                    </div>
+                </div>
+
+                <!-- Live Preview -->
+                <div class="space-y-4">
+                    <label class="text-lg font-semibold text-gray-700 flex items-center space-x-2">
+                        <i class="fas fa-eye text-blue-500"></i>
+                        <span>Live Preview</span>
+                    </label>
+                    
+                    <div id="preview" class="preview h-[750px] p-6 border-2 border-gray-200 rounded-2xl bg-gray-50 prose prose-lg max-w-none overflow-y-auto">
+                        <div class="text-gray-400 text-center py-20">
+                            <i class="fas fa-file-alt text-4xl mb-4"></i>
+                            <p>Your preview will appear here as you type...</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Live Preview -->
-            <div>
-                <label for="preview" class="text-sm font-medium text-gray-500">Preview</label>
-                 <div id="preview" class="preview-pane mt-1 w-full p-4 border border-gray-200 bg-gray-50 rounded-md overflow-y-auto">
-                    <!-- Preview content will be rendered here -->
-                 </div>
+            <!-- Writing Tips -->
+            <div class="mt-8 bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl p-6 border border-purple-200">
+                <h3 class="font-semibold text-purple-900 mb-3 flex items-center">
+                    <i class="fas fa-lightbulb mr-2"></i>
+                    Writing Tips
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-purple-800">
+                    <div class="flex items-start space-x-2">
+                        <i class="fas fa-check text-green-500 mt-0.5"></i>
+                        <span>Use clear, engaging headlines</span>
+                    </div>
+                    <div class="flex items-start space-x-2">
+                        <i class="fas fa-check text-green-500 mt-0.5"></i>
+                        <span>Break up text with subheadings</span>
+                    </div>
+                    <div class="flex items-start space-x-2">
+                        <i class="fas fa-check text-green-500 mt-0.5"></i>
+                        <span>Include examples and stories</span>
+                    </div>
+                    <div class="flex items-start space-x-2">
+                        <i class="fas fa-check text-green-500 mt-0.5"></i>
+                        <span>End with a call to action</span>
+                    </div>
+                </div>
             </div>
-        </div>
-    </main>
-    
+        </form>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
+    <link rel="stylesheet" href="~/css/markdown.css" />
     <script>
+        function setPublishStatus(isPublished) {
+            document.getElementById('isPublishedInput').value = isPublished;
+        }
+
+        // Synchronized scrolling functionality
+        function setupSynchronizedScrolling() {
+            const editor = document.getElementById('editor');
+            const preview = document.getElementById('preview');
+            let isScrollingEditor = false;
+            let isScrollingPreview = false;
+
+            // Sync preview scroll when editor scrolls
+            editor.addEventListener('scroll', function() {
+                if (!isScrollingPreview) {
+                    isScrollingEditor = true;
+                    const scrollPercentage = editor.scrollTop / (editor.scrollHeight - editor.clientHeight);
+                    preview.scrollTop = scrollPercentage * (preview.scrollHeight - preview.clientHeight);
+                    setTimeout(() => { isScrollingEditor = false; }, 50);
+                }
+            });
+
+            // Sync editor scroll when preview scrolls
+            preview.addEventListener('scroll', function() {
+                if (!isScrollingEditor) {
+                    isScrollingPreview = true;
+                    const scrollPercentage = preview.scrollTop / (preview.scrollHeight - preview.clientHeight);
+                    editor.scrollTop = scrollPercentage * (editor.scrollHeight - editor.clientHeight);
+                    setTimeout(() => { isScrollingPreview = false; }, 50);
+                }
+            });
+        }
+
+        // Live preview functionality with marked.js
         document.getElementById('editor').addEventListener('input', function() {
             const markdownText = this.value;
-            document.getElementById('preview').innerHTML = marked.parse(markdownText);
+            const preview = document.getElementById('preview');
+            
+            if (markdownText.trim()) {
+                // Use marked.js for proper markdown-to-HTML conversion
+                const html = marked.parse(markdownText);
+                preview.innerHTML = html;
+                preview.className = "preview h-[750px] p-6 border-2 border-gray-200 rounded-2xl bg-gray-50 prose-content max-w-none overflow-y-auto";
+            } else {
+                preview.innerHTML = `
+                    <div class="text-gray-400 text-center py-20">
+                        <i class="fas fa-file-alt text-4xl mb-4"></i>
+                        <p>Your preview will appear here as you type...</p>
+                    </div>
+                `;
+                preview.className = "preview h-[750px] p-6 border-2 border-gray-200 rounded-2xl bg-gray-50 overflow-y-auto";
+            }
         });
-        // Initial parse for any default content
-        document.getElementById('preview').innerHTML = marked.parse(document.getElementById('editor').value);
+
+        // Auto-save draft functionality (optional)
+        let autoSaveTimer;
+        document.getElementById('editor').addEventListener('input', function() {
+            clearTimeout(autoSaveTimer);
+            autoSaveTimer = setTimeout(() => {
+                // Show auto-save indicator
+                console.log('Auto-saving draft...');
+            }, 2000);
+        });
+
+        // Initialize preview on page load if there's existing content
+        document.addEventListener('DOMContentLoaded', function() {
+            const editor = document.getElementById('editor');
+            const preview = document.getElementById('preview');
+            
+            if (editor.value.trim()) {
+                const html = marked.parse(editor.value);
+                preview.innerHTML = html;
+                preview.className = "preview h-[750px] p-6 border-2 border-gray-200 rounded-2xl bg-gray-50 prose-content max-w-none overflow-y-auto";
+            }
+            
+            // Setup synchronized scrolling
+            setupSynchronizedScrolling();
+        });
     </script>
-</body>
-</html>
+}

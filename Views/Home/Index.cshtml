@@ -1,121 +1,196 @@
-@{
-    ViewData["Title"] = "Home Page";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+@using Narratify.Models.ViewModels.Home
+@model HomeViewModel
+
+@{ 
+    ViewData["Title"] = "Home";
 }
 
-<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
-    <!-- Hero Section -->
-    <section class="text-center">
-        <h1 class="text-4xl md:text-6xl font-extrabold tracking-tighter text-gray-900 leading-tight">
-            Clarity in Thought.
-        </h1>
-        <p class="mt-4 max-w-2xl mx-auto text-lg md:text-xl text-gray-500">
-            A minimal space for focused writing and reading. Share your ideas with the world, without the noise.
-        </p>
-        <div class="mt-8">
-            <a asp-controller="Account" asp-action="Register" class="inline-block bg-gray-900 text-white hover:bg-gray-700 px-8 py-3 rounded-md text-base font-medium">
-                Start Writing
-            </a>
+@await Html.PartialAsync("_Alert")
+
+<!-- Hero Section -->
+<section class="relative overflow-hidden bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center">
+            <h1 class="text-5xl md:text-7xl font-bold bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 bg-clip-text text-transparent leading-tight">
+                Share Your Story
+            </h1>
+            <p class="mt-6 max-w-3xl mx-auto text-xl text-gray-600 leading-relaxed">
+                Join a community of passionate writers and readers. Create, share, and discover amazing stories that inspire and connect us all.
+            </p>
+            
+            @if (User.Identity?.IsAuthenticated != true)
+            {
+                <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+                    <a asp-controller="Account" asp-action="Register" class="btn-primary text-white px-8 py-4 rounded-xl font-semibold text-lg flex items-center justify-center space-x-2">
+                        <i class="fas fa-rocket"></i>
+                        <span>Start Writing Today</span>
+                    </a>
+                    <a asp-controller="Articles" asp-action="Browse" class="bg-white text-gray-700 border-2 border-gray-200 hover:border-purple-300 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 flex items-center justify-center space-x-2">
+                        <i class="fas fa-book-open"></i>
+                        <span>Explore Stories</span>
+                    </a>
+                </div>
+            }
+            else
+            {
+                <div class="mt-10">
+                    <a asp-controller="Articles" asp-action="Create" class="btn-primary text-white px-8 py-4 rounded-xl font-semibold text-lg inline-flex items-center space-x-2">
+                        <i class="fas fa-plus"></i>
+                        <span>Write New Article</span>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+    
+    <!-- Decorative Elements -->
+    <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+        <div class="absolute -top-4 -right-4 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
+        <div class="absolute -bottom-8 -left-4 w-72 h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
+    </div>
+</section>
+
+<!-- Featured Articles Section -->
+<section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">Featured Stories</h2>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                Discover inspiring articles from our community of talented writers
+            </p>
+        </div>
+
+        @if (Model.FeaturedArticles?.Any() == true)
+        {
+            <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                @foreach (var article in Model.FeaturedArticles)
+                {
+                    <article class="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-purple-200">
+                        @if (!string.IsNullOrEmpty(article.FeaturedImageUrl))
+                        {
+                            <div class="aspect-w-16 aspect-h-9 overflow-hidden">
+                                <img src="@article.FeaturedImageUrl" alt="@article.FeaturedImageAlt" 
+                                     class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="h-48 bg-gradient-to-br from-purple-400 to-blue-500 flex items-center justify-center">
+                                <i class="fas fa-book-open text-white text-4xl opacity-50"></i>
+                            </div>
+                        }
+                        
+                        <div class="p-6">
+                            <div class="flex items-center mb-4">
+                                <img src="@article.Author.GetProfilePictureOrDefault()" 
+                                     alt="@article.Author.DisplayName" 
+                                     class="w-10 h-10 rounded-full border-2 border-purple-200">
+                                <div class="ml-3">
+                                    <p class="font-semibold text-gray-900">@article.Author.DisplayName</p>
+                                    <div class="flex items-center text-sm text-gray-500 space-x-4">
+                                        <span>@article.PublishedAt?.ToString("MMM dd, yyyy")</span>
+                                        <span>@article.ReadingTimeMinutes min read</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <a href="/Articles/@article.Slug" class="block group-hover:text-purple-600 transition-colors">
+                                <h3 class="text-xl font-bold text-gray-900 mb-3 line-clamp-2 leading-tight">
+                                    @article.Title
+                                </h3>
+                                <p class="text-gray-600 line-clamp-3 leading-relaxed">
+                                    @(article.Summary ?? article.PreviewText)
+                                </p>
+                            </a>
+                            
+                            <div class="mt-6 flex items-center justify-between">
+                                <div class="flex items-center space-x-4 text-sm text-gray-500">
+                                    <span class="flex items-center">
+                                        <i class="fas fa-eye mr-1"></i>
+                                        @article.ViewCount
+                                    </span>
+                                    <span class="flex items-center">
+                                        <i class="fas fa-comment mr-1"></i>
+                                        @article.CommentCount
+                                    </span>
+                                </div>
+                                <a href="/Articles/@article.Slug" class="text-purple-600 hover:text-purple-700 font-medium flex items-center space-x-1 group-hover:translate-x-1 transition-transform">
+                                    <span>Read More</span>
+                                    <i class="fas fa-arrow-right text-xs"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-16">
+                <div class="w-24 h-24 bg-gradient-to-r from-purple-100 to-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-book-open text-3xl text-purple-500"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-4">No Stories Yet</h3>
+                <p class="text-gray-600 mb-8 max-w-lg mx-auto">
+                    Be the first to share your story with the community. Your unique perspective matters!
+                </p>
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <a asp-controller="Articles" asp-action="Create" class="btn-primary text-white px-6 py-3 rounded-lg font-medium inline-flex items-center space-x-2">
+                        <i class="fas fa-plus"></i>
+                        <span>Write First Article</span>
+                    </a>
+                }
+                else
+                {
+                    <a asp-controller="Account" asp-action="Register" class="btn-primary text-white px-6 py-3 rounded-lg font-medium inline-flex items-center space-x-2">
+                        <i class="fas fa-user-plus"></i>
+                        <span>Join Community</span>
+                    </a>
+                }
+            </div>
+        }
+    </div>
+</section>
+
+<!-- CTA Section -->
+@if (User.Identity?.IsAuthenticated != true)
+{
+    <section class="py-20 bg-gradient-to-r from-purple-600 to-blue-600">
+        <div class="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+            <h2 class="text-4xl font-bold text-white mb-6">
+                Ready to Share Your Voice?
+            </h2>
+            <p class="text-xl text-purple-100 mb-10 leading-relaxed">
+                Join thousands of writers who trust Narratify to share their stories with the world. 
+                Your journey starts with a single word.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a asp-controller="Account" asp-action="Register" class="bg-white text-purple-600 hover:bg-gray-50 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 flex items-center justify-center space-x-2">
+                    <i class="fas fa-rocket"></i>
+                    <span>Start Writing Free</span>
+                </a>
+                <a asp-controller="Articles" asp-action="Browse" class="border-2 border-white text-white hover:bg-white hover:text-purple-600 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 flex items-center justify-center space-x-2">
+                    <i class="fas fa-compass"></i>
+                    <span>Explore Community</span>
+                </a>
+            </div>
         </div>
     </section>
+}
 
-    <!-- Featured Blogs Section -->
-    <section class="mt-16 md:mt-24">
-        <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-gray-900">Featured Stories</h2>
-        <div class="mt-8 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            <!-- Blog Card 1 -->
-            <div class="flex flex-col rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-                <div class="flex-shrink-0">
-                    <img class="h-48 w-full object-cover" src="https://placehold.co/600x400/e2e8f0/e2e8f0" alt="">
-                </div>
-                <div class="flex-1 bg-white p-6 flex flex-col justify-between">
-                    <div class="flex-1">
-                        <p class="text-sm font-medium text-gray-500">
-                            <a href="#" class="hover:underline">Design Principles</a>
-                        </p>
-                        <a asp-controller="Articles" asp-action="Blog" class="block mt-2">
-                            <p class="text-xl font-semibold text-gray-900">The Essence of Swiss Design</p>
-                            <p class="mt-3 text-base text-gray-500">Discover the principles of order, clarity, and objectivity that define one of the most influential design movements.</p>
-                        </a>
-                    </div>
-                    <div class="mt-6 flex items-center">
-                        <div class="flex-shrink-0">
-                            <span class="sr-only">Herman Schmidt</span>
-                            <img class="h-10 w-10 rounded-full" src="https://i.pravatar.cc/40?u=1" alt="">
-                        </div>
-                        <div class="ml-3">
-                            <p class="text-sm font-medium text-gray-900">Herman Schmidt</p>
-                            <div class="flex space-x-1 text-sm text-gray-500">
-                                <time datetime="2025-09-15">Sep 15, 2025</time>
-                                <span aria-hidden="true">&middot;</span>
-                                <span>6 min read</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Blog Card 2 -->
-            <div class="flex flex-col rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-                <div class="flex-shrink-0">
-                     <img class="h-48 w-full object-cover" src="https://placehold.co/600x400/e2e8f0/e2e8f0" alt="">
-                </div>
-                <div class="flex-1 bg-white p-6 flex flex-col justify-between">
-                    <div class="flex-1">
-                        <p class="text-sm font-medium text-gray-500">
-                            <a href="#" class="hover:underline">Productivity</a>
-                        </p>
-                        <a asp-controller="Articles" asp-action="Blog" class="block mt-2">
-                            <p class="text-xl font-semibold text-gray-900">Markdown for Structured Writing</p>
-                            <p class="mt-3 text-base text-gray-500">Learn how a simple text format can revolutionize your writing workflow and bring structure to your thoughts.</p>
-                        </a>
-                    </div>
-                    <div class="mt-6 flex items-center">
-                        <div class="flex-shrink-0">
-                            <span class="sr-only">Jane Doe</span>
-                            <img class="h-10 w-10 rounded-full" src="https://i.pravatar.cc/40?u=2" alt="">
-                        </div>
-                        <div class="ml-3">
-                            <p class="text-sm font-medium text-gray-900">Jane Doe</p>
-                            <div class="flex space-x-1 text-sm text-gray-500">
-                                <time datetime="2025-09-12">Sep 12, 2025</time>
-                                <span aria-hidden="true">&middot;</span>
-                                <span>8 min read</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Blog Card 3 -->
-            <div class="flex flex-col rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-                <div class="flex-shrink-0">
-                    <img class="h-48 w-full object-cover" src="https://placehold.co/600x400/e2e8f0/e2e8f0" alt="">
-                </div>
-                <div class="flex-1 bg-white p-6 flex flex-col justify-between">
-                    <div class="flex-1">
-                        <p class="text-sm font-medium text-gray-500">
-                            <a href="#" class="hover:underline">Technology</a>
-                        </p>
-                        <a asp-controller="Articles" asp-action="Blog" class="block mt-2">
-                            <p class="text-xl font-semibold text-gray-900">The Rise of Static Site Generators</p>
-                            <p class="mt-3 text-base text-gray-500">Exploring the benefits of performance, security, and simplicity in modern web development.</p>
-                        </a>
-                    </div>
-                    <div class="mt-6 flex items-center">
-                        <div class="flex-shrink-0">
-                            <span class="sr-only">Klaus Richter</span>
-                            <img class="h-10 w-10 rounded-full" src="https://i.pravatar.cc/40?u=3" alt="">
-                        </div>
-                        <div class="ml-3">
-                            <p class="text-sm font-medium text-gray-900">Klaus Richter</p>
-                            <div class="flex space-x-1 text-sm text-gray-500">
-                                <time datetime="2025-09-10">Sep 10, 2025</time>
-                                <span aria-hidden="true">&middot;</span>
-                                <span>5 min read</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            </div>
-        </section>
-</main>
+<style>
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    
+    .line-clamp-3 {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+</style>

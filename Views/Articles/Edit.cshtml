@@ -1,0 +1,268 @@
+@using Narratify.Models.ViewModels.Articles
+@model EditArticleViewModel
+
+@{ 
+    ViewData["Title"] = "Edit Post";
+}
+
+@await Html.PartialAsync("_Alert")
+
+<!-- Edit Post Header -->
+<section class="bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center py-4">
+            <div class="flex items-center space-x-4">
+                <a asp-controller="Home" asp-action="Index" class="flex items-center space-x-2 text-gray-600 hover:text-purple-600">
+                    <div class="w-8 h-8 bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-feather-alt text-white text-sm"></i>
+                    </div>
+                    <span class="text-xl font-bold">Narratify</span>
+                </a>
+                <span class="text-gray-400">/</span>
+                <span class="text-gray-600 font-medium">Edit Post</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-3">
+                    <button type="submit" onclick="setPublishStatus(false);" form="editArticleForm" 
+                            class="bg-gray-100 text-gray-700 hover:bg-gray-200 px-6 py-2.5 rounded-xl font-medium transition-all duration-300 flex items-center space-x-2 border border-gray-200">
+                        <i class="fas fa-save"></i>
+                        <span>Save as Draft</span>
+                    </button>
+                    <button type="submit" onclick="setPublishStatus(true);" form="editArticleForm" 
+                            class="btn-primary text-white px-6 py-2.5 rounded-xl font-medium flex items-center space-x-2">
+                        <i class="fas fa-globe"></i>
+                        <span>Publish</span>
+                    </button>
+                </div>
+                <div class="flex items-center">
+                    <img class="h-10 w-10 rounded-full border-2 border-purple-200" 
+                         src="@(ViewBag.ProfilePictureUrl ?? "https://ui-avatars.com/api/?name=User&background=667eea&color=fff")" 
+                         alt="Your profile">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main Editor -->
+<section class="bg-white min-h-screen py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <form id="editArticleForm" asp-controller="Articles" asp-action="Edit" method="post">
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="IsPublished" id="isPublishedInput" />
+            
+            <!-- Validation Errors -->
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="mb-6 bg-red-50 border border-red-200 rounded-xl p-4">
+                    <div class="flex items-center mb-3">
+                        <i class="fas fa-exclamation-circle text-red-500 mr-2"></i>
+                        <h3 class="font-semibold text-red-800">Please fix the following errors:</h3>
+                    </div>
+                    <div asp-validation-summary="All" class="text-red-600 text-sm space-y-1"></div>
+                </div>
+            }
+
+            <!-- Title Input -->
+            <div class="mb-8">
+                <input asp-for="Title" type="text" 
+                       placeholder="Enter your article title..." 
+                       class="w-full text-4xl md:text-5xl font-bold border-none focus:ring-0 p-0 placeholder-gray-400 bg-transparent focus:outline-none">
+                <span asp-validation-for="Title" class="text-red-500 text-sm block mt-2"></span>
+            </div>
+
+            <!-- Writing Interface -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Markdown Editor -->
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <label class="text-lg font-semibold text-gray-700 flex items-center space-x-2">
+                            <i class="fas fa-code text-purple-500"></i>
+                            <span>Write in Markdown</span>
+                        </label>
+                        <div class="flex items-center space-x-2 text-sm text-gray-500">
+                            <i class="fab fa-markdown"></i>
+                            <span>Markdown supported</span>
+                        </div>
+                    </div>
+                    
+                    <div class="relative">
+                        <textarea asp-for="Content" id="editor" rows="30" 
+                                  class="w-full p-6 border-2 border-gray-200 rounded-2xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent font-mono text-sm leading-relaxed resize-none" 
+                                  placeholder="# Start writing your story...
+
+## Use markdown to format your content
+
+- Create lists
+- **Bold text**
+- *Italic text*
+- [Links](https://example.com)
+- And much more!
+
+Share your thoughts, experiences, and insights with the world..."></textarea>
+                        <span asp-validation-for="Content" class="text-red-500 text-sm block mt-2"></span>
+                    </div>
+                </div>
+
+                <!-- Live Preview -->
+                <div class="space-y-4">
+                    <label class="text-lg font-semibold text-gray-700 flex items-center space-x-2">
+                        <i class="fas fa-eye text-blue-500"></i>
+                        <span>Live Preview</span>
+                    </label>
+                    
+                    <div id="preview" class="preview h-[750px] p-6 border-2 border-gray-200 rounded-2xl bg-gray-50 prose prose-lg max-w-none overflow-y-auto">
+                        <div class="text-gray-400 text-center py-20">
+                            <i class="fas fa-file-alt text-4xl mb-4"></i>
+                            <p>Your preview will appear here as you type...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Publication Status -->
+            <div class="mt-8 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
+                <h3 class="font-semibold text-blue-900 mb-3 flex items-center">
+                    <i class="fas fa-toggle-on mr-2"></i>
+                    Publication Status
+                </h3>
+                <div class="flex items-center space-x-4">
+                    <label class="flex items-center space-x-2 cursor-pointer">
+                        <input type="checkbox" asp-for="IsPublished" id="publishedCheckbox" class="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                        <span class="text-blue-800 font-medium">Publish this article</span>
+                    </label>
+                    <div class="text-sm text-blue-600">
+                        <span id="statusText">@(Model.IsPublished ? "Published" : "Draft")</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Writing Tips -->
+            <div class="mt-8 bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl p-6 border border-purple-200">
+                <h3 class="font-semibold text-purple-900 mb-3 flex items-center">
+                    <i class="fas fa-lightbulb mr-2"></i>
+                    Writing Tips
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-purple-800">
+                    <div class="flex items-start space-x-2">
+                        <i class="fas fa-check text-green-500 mt-0.5"></i>
+                        <span>Use clear, engaging headlines</span>
+                    </div>
+                    <div class="flex items-start space-x-2">
+                        <i class="fas fa-check text-green-500 mt-0.5"></i>
+                        <span>Break up text with subheadings</span>
+                    </div>
+                    <div class="flex items-start space-x-2">
+                        <i class="fas fa-check text-green-500 mt-0.5"></i>
+                        <span>Include examples and stories</span>
+                    </div>
+                    <div class="flex items-start space-x-2">
+                        <i class="fas fa-check text-green-500 mt-0.5"></i>
+                        <span>End with a call to action</span>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
+    <link rel="stylesheet" href="~/css/markdown.css" />
+    <script>
+        function setPublishStatus(isPublished) {
+            document.getElementById('isPublishedInput').value = isPublished;
+            document.getElementById('publishedCheckbox').checked = isPublished;
+            updateStatusText(isPublished);
+        }
+
+        function updateStatusText(isPublished) {
+            document.getElementById('statusText').textContent = isPublished ? 'Published' : 'Draft';
+        }
+
+        // Synchronized scrolling functionality
+        function setupSynchronizedScrolling() {
+            const editor = document.getElementById('editor');
+            const preview = document.getElementById('preview');
+            let isScrollingEditor = false;
+            let isScrollingPreview = false;
+
+            // Sync preview scroll when editor scrolls
+            editor.addEventListener('scroll', function() {
+                if (!isScrollingPreview) {
+                    isScrollingEditor = true;
+                    const scrollPercentage = editor.scrollTop / (editor.scrollHeight - editor.clientHeight);
+                    preview.scrollTop = scrollPercentage * (preview.scrollHeight - preview.clientHeight);
+                    setTimeout(() => { isScrollingEditor = false; }, 50);
+                }
+            });
+
+            // Sync editor scroll when preview scrolls
+            preview.addEventListener('scroll', function() {
+                if (!isScrollingEditor) {
+                    isScrollingPreview = true;
+                    const scrollPercentage = preview.scrollTop / (preview.scrollHeight - preview.clientHeight);
+                    editor.scrollTop = scrollPercentage * (editor.scrollHeight - editor.clientHeight);
+                    setTimeout(() => { isScrollingPreview = false; }, 50);
+                }
+            });
+        }
+
+        // Live preview functionality with marked.js
+        document.getElementById('editor').addEventListener('input', function() {
+            const markdownText = this.value;
+            const preview = document.getElementById('preview');
+            
+            if (markdownText.trim()) {
+                // Use marked.js for proper markdown-to-HTML conversion
+                const html = marked.parse(markdownText);
+                preview.innerHTML = html;
+                preview.className = "preview h-[750px] p-6 border-2 border-gray-200 rounded-2xl bg-gray-50 prose-content max-w-none overflow-y-auto";
+            } else {
+                preview.innerHTML = `
+                    <div class="text-gray-400 text-center py-20">
+                        <i class="fas fa-file-alt text-4xl mb-4"></i>
+                        <p>Your preview will appear here as you type...</p>
+                    </div>
+                `;
+                preview.className = "preview h-[750px] p-6 border-2 border-gray-200 rounded-2xl bg-gray-50 overflow-y-auto";
+            }
+        });
+
+        // Handle checkbox change
+        document.getElementById('publishedCheckbox').addEventListener('change', function() {
+            const isPublished = this.checked;
+            document.getElementById('isPublishedInput').value = isPublished;
+            updateStatusText(isPublished);
+        });
+
+        // Auto-save draft functionality (optional)
+        let autoSaveTimer;
+        document.getElementById('editor').addEventListener('input', function() {
+            clearTimeout(autoSaveTimer);
+            autoSaveTimer = setTimeout(() => {
+                // Show auto-save indicator
+                console.log('Auto-saving draft...');
+            }, 2000);
+        });
+
+        // Initialize preview on page load with existing content
+        document.addEventListener('DOMContentLoaded', function() {
+            const editor = document.getElementById('editor');
+            const preview = document.getElementById('preview');
+            
+            if (editor.value.trim()) {
+                const html = marked.parse(editor.value);
+                preview.innerHTML = html;
+                preview.className = "preview h-[750px] p-6 border-2 border-gray-200 rounded-2xl bg-gray-50 prose-content max-w-none overflow-y-auto";
+            }
+            
+            // Initialize status text
+            const checkbox = document.getElementById('publishedCheckbox');
+            updateStatusText(checkbox.checked);
+            
+            // Setup synchronized scrolling
+            setupSynchronizedScrolling();
+        });
+    </script>
+}

@@ -1,6 +1,7 @@
 using Narratify.Models.Entities;
 using Narratify.Repositories.Interfaces;
 using Narratify.Services.Interfaces;
+using System.Linq;
 
 namespace Narratify.Services.Implementations
 {
@@ -18,6 +19,16 @@ namespace Narratify.Services.Implementations
             return await _unitOfWork.Articles.GetByIdAsync(id);
         }
 
+        public async Task<Article?> GetArticleBySlugAsync(string slug)
+        {
+            return (await _unitOfWork.Articles.FindAsync(a => a.Slug == slug && a.IsPublished, a => a.Author, a => a.Comments)).FirstOrDefault();
+        }
+
+        public async Task<Article?> GetArticleBySlugForAuthorAsync(string slug, string authorId)
+        {
+            return (await _unitOfWork.Articles.FindAsync(a => a.Slug == slug && a.AuthorId == authorId, a => a.Author, a => a.Comments)).FirstOrDefault();
+        }
+
         public async Task<IEnumerable<Article>> GetAllArticles()
         {
             return await _unitOfWork.Articles.GetAllAsync();
@@ -25,16 +36,19 @@ namespace Narratify.Services.Implementations
 
         public async Task<IEnumerable<Article>> GetPublishedArticles()
         {
-            return await _unitOfWork.Articles.FindAsync(a => a.IsPublished);
+            // Ensure related data for views is available
+            return await _unitOfWork.Articles.GetPublishedWithIncludesAsync();
         }
 
         public async Task<IEnumerable<Article>> GetUserArticles(string userId)
         {
-            return await _unitOfWork.Articles.FindAsync(a => a.AuthorId == userId);
+            return await _unitOfWork.Articles.FindAsync(a => a.AuthorId == userId, a => a.Author);
         }
 
         public async Task CreateArticle(Article article)
         {
+            article.GenerateSlug();
+            article.UpdateReadingTime();
             await _unitOfWork.Articles.AddAsync(article);
             await _unitOfWork.CompleteAsync();
         }
@@ -61,6 +75,7 @@ namespace Narratify.Services.Implementations
             if (article != null)
             {
                 article.IsPublished = true;
+                article.Status = ArticleStatus.Published;
                 await UpdateArticle(article);
                 return true;
             }
@@ -73,10 +88,32 @@ namespace Narratify.Services.Implementations
             if (article != null)
             {
                 article.IsPublished = false;
+                article.Status = ArticleStatus.Draft;
                 await UpdateArticle(article);
                 return true;
             }
             return false;
+        }
+
+        public async Task<int> GetTotalArticleCountAsync()
+        {
+            return await _unitOfWork.Articles.CountAsync();
+        }
+
+        public async Task RecalculateArticleStats()
+        {
+            var allArticles = await _unitOfWork.Articles.GetAllAsync();
+            
+            foreach (var article in allArticles)
+            {
+                // Recalculate comment count from actual comments in database
+                var actualCommentCount = (await _unitOfWork.Comments.FindAsync(c => c.ArticleId == article.Id)).Count();
+                article.CommentCount = actualCommentCount;
+                
+                _unitOfWork.Articles.Update(article);
+            }
+            
+            await _unitOfWork.CompleteAsync();
         }
     }
 }

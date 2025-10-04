@@ -7,7 +7,6 @@ public class UnitOfWork : IUnitOfWork
 {
     private readonly ApplicationDbContext _context;
     private IArticleRepository? _articles;
-    private ICategoryRepository? _categories;
     private ICommentRepository? _comments;
     private IUserRepository? _users;
 
@@ -17,7 +16,6 @@ public class UnitOfWork : IUnitOfWork
     }
 
     public IArticleRepository Articles => _articles ??= new ArticleRepository(_context);
-    public ICategoryRepository Categories => _categories ??= new CategoryRepository(_context);
     public ICommentRepository Comments => _comments ??= new CommentRepository(_context);
     public IUserRepository Users => _users ??= new UserRepository(_context);
 

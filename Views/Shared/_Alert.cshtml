@@ -1,0 +1,46 @@
+@{
+    var successMessage = TempData["Success"]?.ToString();
+    var errorMessage = TempData["Error"]?.ToString();
+}
+
+@if (!string.IsNullOrEmpty(successMessage))
+{
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div class="bg-gradient-to-r from-green-50 to-emerald-50 border-green-200 text-green-800 border rounded-xl p-4 shadow-sm">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-check-circle text-green-500 text-lg"></i>
+                </div>
+                <div class="ml-3">
+                    <p class="font-medium">@successMessage</p>
+                </div>
+                <div class="ml-auto">
+                    <button type="button" class="inline-flex text-gray-400 hover:text-gray-600" onclick="this.parentElement.parentElement.parentElement.style.display='none'">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div class="bg-gradient-to-r from-red-50 to-rose-50 border-red-200 text-red-800 border rounded-xl p-4 shadow-sm">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-exclamation-circle text-red-500 text-lg"></i>
+                </div>
+                <div class="ml-3">
+                    <p class="font-medium">@errorMessage</p>
+                </div>
+                <div class="ml-auto">
+                    <button type="button" class="inline-flex text-gray-400 hover:text-gray-600" onclick="this.parentElement.parentElement.parentElement.style.display='none'">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}

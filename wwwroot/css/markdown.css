@@ -1,0 +1,205 @@
+/*
+ * markdown.css
+ * This stylesheet is designed to style HTML rendered from common Markdown syntax.
+ * All selectors are prefixed with '.preview.prose-content' as requested.
+ */
+
+/* ====================================
+ * 1. HEADINGS (H1-H6)
+ * Markdown: # Heading, ## Subheading, etc.
+ * ==================================== */
+
+.preview.prose-content h1 {
+    font-size: 2.25rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #1f2937;
+    border-bottom: 2px solid #e5e7eb;
+    padding-bottom: 0.5rem;
+}
+
+.preview.prose-content h2 {
+    font-size: 1.875rem;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    color: #374151;
+}
+
+.preview.prose-content h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: #4b5563;
+}
+
+.preview.prose-content h4, .preview.prose-content h5, .preview.prose-content h6 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-top: 1.25rem;
+    margin-bottom: 0.5rem;
+    color: #6b7280;
+}
+
+/* ====================================
+ * 2. PARAGRAPHS & LINKS
+ * Markdown: Plain text, [link](url)
+ * ==================================== */
+
+.preview.prose-content p {
+    margin-bottom: 1rem;
+    line-height: 1.7;
+    color: #374151;
+}
+
+.preview.prose-content a {
+    color: #8b5cf6; /* Primary link color (Purple) */
+    text-decoration: underline;
+}
+
+.preview.prose-content a:hover {
+    color: #7c3aed;
+    text-decoration: none;
+}
+
+/* ====================================
+ * 3. TEXT EMPHASIS
+ * Markdown: **Bold**, *Italic*, ~~Strikethrough~~
+ * ==================================== */
+
+.preview.prose-content strong {
+    font-weight: 700;
+    color: #1f2937; /* Darker color for strong emphasis */
+}
+
+.preview.prose-content em {
+    font-style: italic;
+}
+
+/* Strikethrough is commonly rendered as <del> or <s> */
+.preview.prose-content del, .preview.prose-content s {
+    text-decoration: line-through;
+    color: #9ca3af; /* A muted color for deleted text */
+}
+
+/* ====================================
+ * 4. LISTS
+ * Markdown: * Unordered, 1. Ordered
+ * ==================================== */
+
+.preview.prose-content ul, .preview.prose-content ol {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+}
+
+.preview.prose-content ul li {
+    list-style-type: disc;
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+    color: #374151;
+}
+
+.preview.prose-content ol li {
+    list-style-type: decimal;
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+    color: #374151;
+}
+
+/* ====================================
+ * 5. BLOCKQUOTES
+ * Markdown: > Quote text
+ * ==================================== */
+
+.preview.prose-content blockquote {
+    border-left: 4px solid #8b5cf6; /* Distinct purple border */
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+    font-style: italic;
+    background-color: #f8fafc;
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+
+/* ====================================
+ * 6. CODE BLOCKS
+ * Markdown: `inline code`, ```fenced block```
+ * ==================================== */
+
+.preview.prose-content code {
+    background-color: #f1f5f9;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    font-family: 'Courier New', monospace;
+    font-size: 0.875rem;
+    color: #7c3aed; /* Purple color for inline code text */
+}
+
+.preview.prose-content pre {
+    background-color: #1f2937; /* Dark background for code blocks */
+    color: #f9fafb;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin: 1rem 0;
+}
+
+.preview.prose-content pre code {
+    /* Override inline code styles for code block */
+    background-color: transparent;
+    padding: 0;
+    color: #f9fafb;
+}
+
+/* ====================================
+ * 7. TABLES
+ * Markdown: | Header | Row |
+ * ==================================== */
+
+.preview.prose-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    /* Tables need an outer box-shadow or light border to look contained */
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    border-radius: 0.5rem;
+    overflow: hidden; /* Ensures borders/shadows are contained */
+}
+
+.preview.prose-content th, .preview.prose-content td {
+    border: 1px solid #d1d5db;
+    padding: 0.75rem;
+    text-align: left;
+}
+
+.preview.prose-content th {
+    background-color: #f9fafb; /* Light header background */
+    font-weight: 600;
+    color: #374151;
+    border-bottom: 2px solid #d1d5db;
+}
+
+/* ====================================
+ * 8. MEDIA & DIVIDERS
+ * Markdown: ![Image](url), ---
+ * ==================================== */
+
+.preview.prose-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    margin: 1rem 0;
+    display: block; /* Centers block elements better */
+}
+
+.preview.prose-content hr {
+    border: none;
+    border-top: 1px solid #e5e7eb;
+    margin: 2rem 0;
+}

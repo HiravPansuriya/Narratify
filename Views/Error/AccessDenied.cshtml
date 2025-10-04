@@ -1,0 +1,61 @@
+@{
+    ViewData["Title"] = "Access Denied";
+}
+
+<div class="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-lg w-full">
+        <div class="text-center">
+            <!-- Access Denied Icon -->
+            <div class="relative mb-8">
+                <div class="w-32 h-32 bg-gradient-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center mx-auto shadow-2xl">
+                    <i class="fas fa-shield-alt text-white text-4xl"></i>
+                </div>
+                <!-- Decorative elements -->
+                <div class="absolute -top-4 -right-4 w-16 h-16 bg-red-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
+                <div class="absolute -bottom-4 -left-4 w-16 h-16 bg-orange-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
+            </div>
+
+            <!-- Error Message -->
+            <div class="bg-white/80 backdrop-blur-xl border border-white/20 rounded-2xl p-8 shadow-2xl">
+                <h1 class="text-5xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent mb-4">
+                    403
+                </h1>
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Access Denied</h2>
+                <p class="text-lg text-gray-600 mb-4 leading-relaxed">
+                    Whoops! You don't have permission to access this resource.
+                </p>
+                <p class="text-base text-gray-500 mb-8">
+                    This content is protected and can only be accessed by authorized users. 
+                    If you're the owner, make sure you're signed in with the correct account.
+                </p>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a asp-controller="Home" asp-action="Index" 
+                       class="btn-primary text-white px-8 py-4 rounded-xl font-semibold text-lg inline-flex items-center justify-center space-x-2">
+                        <i class="fas fa-home"></i>
+                        <span>Go Home</span>
+                    </a>
+                    <a asp-controller="Account" asp-action="Login" 
+                       class="bg-white text-gray-700 border-2 border-gray-200 hover:border-purple-300 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 inline-flex items-center justify-center space-x-2">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span>Sign In</span>
+                    </a>
+                </div>
+
+                <!-- Help Text -->
+                <div class="mt-8 pt-6 border-t border-gray-200">
+                    <div class="bg-amber-50 border border-amber-200 rounded-xl p-4">
+                        <div class="flex items-start space-x-3">
+                            <i class="fas fa-info-circle text-amber-500 mt-0.5"></i>
+                            <div class="text-sm text-amber-700">
+                                <p class="font-semibold mb-1">Need access?</p>
+                                <p>Contact the content owner or site administrator if you believe you should have access to this resource.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

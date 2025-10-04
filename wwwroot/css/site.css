@@ -20,3 +20,63 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+/* Code Block Styling */
+pre {
+    position: relative;
+    padding-top: 2.5em; /* Space for language label and copy button */
+}
+
+.code-language-label {
+    position: absolute;
+    top: 0.5em;
+    left: 0.5em;
+    background-color: #333;
+    color: #fff;
+    padding: 0.2em 0.5em;
+    border-radius: 3px;
+    font-size: 0.8em;
+}
+
+.copy-code-button {
+    position: absolute;
+    top: 0.5em;
+    right: 0.5em;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 0.2em 0.5em;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 0.8em;
+}
+
+.copy-code-button:hover {
+    background-color: #0056b3;
+}
+
+/* Table Styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1em;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+/* Link Styling */
+a {
+    color: #00008B; /* Dark blue */
+    text-decoration: underline;
+}

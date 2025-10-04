@@ -8,7 +8,8 @@ namespace Narratify.Services.Implementations
     {
         public string ConvertToHtml(string markdown)
         {
-            return Markdown.ToHtml(markdown);
+            var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
+            return Markdown.ToHtml(markdown, pipeline);
         }
     }
 }
