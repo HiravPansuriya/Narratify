@@ -64,12 +64,8 @@ public class Article
 
     [ForeignKey("AuthorId")] public virtual User Author { get; set; } = null!;
 
-    public int? CategoryId { get; set; }
-    public virtual Category? Category { get; set; }
-
     // Navigation Properties
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
-    public virtual ICollection<ArticleCategory> ArticleCategories { get; set; } = new List<ArticleCategory>();
 
     /* <---- Computed Properties ----> */
     [NotMapped]
