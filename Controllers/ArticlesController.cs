@@ -25,20 +25,39 @@ namespace Narratify.Controllers
             _userManager = userManager;
         }
 
-        // Browse/List articles - must come before {slug} route
         [HttpGet("")]
         [HttpGet("Browse")]
-        public async Task<IActionResult> Browse(int page = 1, int pageSize = 12)
+        public async Task<IActionResult> Browse(string? search, string? sort, int page = 1, int pageSize = 12)
         {
             var allArticles = await _articleService.GetPublishedArticles();
+
+            // 1️⃣ Filter by search
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                var lowerSearch = search.ToLower();
+                allArticles = allArticles.Where(a =>
+                    (a.Title != null && a.Title.ToLower().Contains(lowerSearch)) ||
+                    (a.Summary != null && a.Summary.ToLower().Contains(lowerSearch)) ||
+                    (a.Author != null && a.Author.DisplayName.ToLower().Contains(lowerSearch))
+                ).ToList();
+            }
+
+            // 2️⃣ Sort
+            allArticles = sort switch
+            {
+                "Popular" => allArticles.OrderByDescending(a => a.ViewCount).ToList(),
+                "Most Commented" => allArticles.OrderByDescending(a => a.Comments?.Count ?? 0).ToList(),
+                "Oldest" => allArticles.OrderBy(a => a.PublishedAt).ToList(),
+                _ => allArticles.OrderByDescending(a => a.PublishedAt).ToList(), // Latest default
+            };
+
+            // 3️⃣ Pagination
+            var totalArticles = allArticles.Count();
+            var totalPages = (int)Math.Ceiling((double)totalArticles / pageSize);
             var pagedArticles = allArticles
-                .OrderByDescending(a => a.PublishedAt)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
-
-            var totalArticles = allArticles.Count();
-            var totalPages = (int)Math.Ceiling((double)totalArticles / pageSize);
 
             var viewModel = new BrowseArticlesViewModel
             {
@@ -46,13 +65,12 @@ namespace Narratify.Controllers
                 CurrentPage = page,
                 TotalPages = totalPages,
                 PageSize = pageSize,
-                TotalArticles = totalArticles
+                TotalArticles = totalArticles,
             };
 
             return View(viewModel);
         }
 
-        // Create article - must come before {slug} route
         [HttpGet("Create")]
         public async Task<IActionResult> Create()
         {
@@ -90,10 +108,11 @@ namespace Narratify.Controllers
                     IsPublished = model.IsPublished,
                     PublishedAt = model.IsPublished ? DateTime.UtcNow : null
                 };
+                
+                article.HtmlContent = Markdown.ToHtml(article.Content);
 
                 await _articleService.CreateArticle(article);
                 
-                // Redirect based on article status
                 if (model.IsPublished)
                 {
                     // For published articles, redirect to the article page
@@ -107,12 +126,10 @@ namespace Narratify.Controllers
                 }
             }
             
-            // If we get here, validation failed - preserve the profile picture URL
             ViewBag.ProfilePictureUrl = currentUser.GetProfilePictureOrDefault();
             return View(model);
         }
 
-        // Edit article - must come before {slug} route
         [HttpGet("Edit/{id}")]
         public async Task<IActionResult> Edit(int id)
         {
@@ -139,13 +156,13 @@ namespace Narratify.Controllers
                 Id = article.Id,
                 Title = article.Title,
                 Content = article.Content,
-                Summary = article.Summary,
-                FeaturedImageUrl = article.FeaturedImageUrl,
-                IsPublished = article.IsPublished, // This is the key fix for the checkbox
+                Summary = article.PreviewText,
+                IsPublished = article.IsPublished,
                 CreatedAt = article.CreatedAt,
                 UpdatedAt = article.UpdatedAt,
                 PublishedAt = article.PublishedAt,
-                AuthorName = article.AuthorName
+                AuthorName = article.AuthorName,
+                HtmlContent = article.HtmlContent
             };
 
             ViewBag.ProfilePictureUrl = currentUser.GetProfilePictureOrDefault();
@@ -184,38 +201,29 @@ namespace Narratify.Controllers
                 article.Title = model.Title;
                 article.Content = model.Content;
                 article.Summary = model.Summary;
-                article.FeaturedImageUrl = model.FeaturedImageUrl;
                 article.UpdatedAt = DateTime.UtcNow;
 
-                // Handle publish/draft status change - THIS IS THE KEY FIX
+                // Handle publish/draft status change
                 var wasPublished = article.IsPublished;
                 article.IsPublished = model.IsPublished;
                 
                 // IMPORTANT: Keep Status and IsPublished in sync
                 if (model.IsPublished && !wasPublished)
                 {
-                    // Publishing a draft article
-                    article.Status = ArticleStatus.Published; // Add this line
-                    article.IsPublished = true;
-                    article.PublishedAt = DateTime.UtcNow;
+                    article.Publish();
                     TempData["SuccessMessage"] = "Article published successfully!";
                 }
                 else if (!model.IsPublished && wasPublished)
                 {
-                    // Making a published article draft
-                    article.Status = ArticleStatus.Draft; // Add this line
-                    article.IsPublished = false;
-                    article.PublishedAt = null;
+                    article.Unpublish();
                     TempData["SuccessMessage"] = "Article saved as draft!";
                 }
                 else
                 {
-                    // Update status to match IsPublished state
                     article.Status = model.IsPublished ? ArticleStatus.Published : ArticleStatus.Draft;
                     TempData["SuccessMessage"] = "Article updated successfully!";
                 }
 
-                // Convert markdown to HTML
                 article.HtmlContent = Markdown.ToHtml(article.Content);
 
                 await _articleService.UpdateArticle(article);
@@ -292,11 +300,10 @@ namespace Narratify.Controllers
                 return Redirect($"/Articles/{model.ArticleSlug}");
             }
             
-            // If model state is not valid, redirect back to the article
             return Redirect($"/Articles/{model.ArticleSlug}");
         }
 
-        // Individual article by slug - MUST come last to avoid conflicts
+        // Individual article by slug
         [HttpGet("{slug}")]
         public async Task<IActionResult> Blog(string slug)
         {

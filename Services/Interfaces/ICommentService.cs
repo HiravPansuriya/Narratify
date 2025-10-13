@@ -9,5 +9,4 @@ public interface ICommentService
     Task AddComment(Comment comment);
     Task UpdateComment(Comment comment);
     Task DeleteComment(int id);
-    Task<int> GetCommentsCountForLastWeekAsync();
 }

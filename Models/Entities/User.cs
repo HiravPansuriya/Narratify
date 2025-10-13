@@ -1,7 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
-using Narratify.Models.Entities;
-using Narratify.Models.Enums;
 
 namespace Narratify.Models.Entities;
 
@@ -30,8 +28,6 @@ public class User : IdentityUser
     /* <---- Account Metadata ----> */
     [Display(Name = "Date Joined")] public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-    [Display(Name = "Email Verified")] public bool IsEmailVerified { get; set; } = false;
-
     public int ArticleCount { get; set; } = 0;
 
     public virtual ICollection<Article> Articles { get; set; } = new List<Article>();
@@ -43,10 +39,6 @@ public class User : IdentityUser
 
     [Display(Name = "Initials")]
     public string Initials => $"{FirstName.FirstOrDefault()}{LastName.FirstOrDefault()}".ToUpper();
-
-    public UserRole Role { get; set; } = UserRole.User;
-
-    public UserStatus UserStatus { get; set; } = UserStatus.Active;
     
     public DateTime? LastLoginAt { get; set; }
 

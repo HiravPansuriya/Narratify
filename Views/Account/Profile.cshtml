@@ -30,11 +30,6 @@
                         <i class="fas fa-edit"></i>
                         <span>Edit Profile</span>
                     </a>
-                    <a asp-controller="Articles" asp-action="Create" 
-                       class="bg-white text-gray-700 border-2 border-gray-200 hover:border-purple-300 px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center space-x-2">
-                        <i class="fas fa-plus"></i>
-                        <span>New Article</span>
-                    </a>
                 </div>
             </div>
         </div>
@@ -105,7 +100,7 @@
                             
                             <a href="/Articles/@article.Slug" class="block group-hover:text-purple-600 transition-colors duration-300">
                                 <h3 class="text-xl font-bold text-gray-900 mb-3 line-clamp-2">@article.Title</h3>
-                                <p class="text-gray-600 text-sm leading-relaxed line-clamp-3">@(article.Summary ?? "No summary available.")</p>
+                                <p class="text-gray-600 text-sm leading-relaxed line-clamp-3">@(article.PreviewText ?? "No summary available.")</p>
                             </a>
                             
                             <div class="flex items-center justify-between mt-6 pt-4 border-t border-gray-100">

@@ -28,19 +28,12 @@ public class ApplicationDbContext : IdentityDbContext<User>
             .HasOne(c => c.Article)
             .WithMany(a => a.Comments)
             .HasForeignKey(c => c.ArticleId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder.Entity<Comment>()
             .HasOne(c => c.User)
-            .WithMany(u => u.Comments)
+            .WithMany()
             .HasForeignKey(c => c.UserId)
             .OnDelete(DeleteBehavior.SetNull);
-
-        // Configure self-referencing relationship for comment replies
-        builder.Entity<Comment>()
-            .HasOne(c => c.ParentComment)
-            .WithMany(c => c.Replies)
-            .HasForeignKey(c => c.ParentCommentId)
-            .OnDelete(DeleteBehavior.NoAction);
     }
 }

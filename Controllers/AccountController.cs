@@ -1,12 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Narratify.Models;
-using Narratify.Models.ViewModels;
 using Narratify.Models.Entities;
 using Narratify.Models.ViewModels.Account;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Narratify.Models.Enums;
 using Narratify.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 
@@ -46,13 +42,10 @@ namespace Narratify.Controllers
                     Email = model.Email,
                     FirstName = model.FirstName,
                     LastName = model.LastName,
-                    UserStatus = UserStatus.Active, // Set default status
-                    Role = UserRole.User // Default role is User
                 };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(user, UserRole.User.ToString());
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     return RedirectToAction("Index", "Home");
                 }
@@ -163,7 +156,6 @@ namespace Narratify.Controllers
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            // Store the old profile picture URL for potential deletion
             var oldProfilePictureUrl = user.ProfilePictureUrl;
 
             // Update basic profile information

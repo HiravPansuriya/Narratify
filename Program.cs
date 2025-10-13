@@ -31,7 +31,6 @@ builder.Services.AddSession(options =>
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IArticleService, ArticleService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
-builder.Services.AddTransient<IEmailService, EmailService>();
 builder.Services.AddScoped<IFileUploadService, FileUploadService>();
 builder.Services.AddSingleton<IMarkdownService, MarkdownService>();
 

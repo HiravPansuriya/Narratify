@@ -26,12 +26,10 @@ namespace Narratify.Services.Implementations
 
         public async Task AddComment(Comment comment)
         {
-            await _unitOfWork.Comments.AddAsync(comment);
-            
-            // Update the article's comment count
             var article = await _unitOfWork.Articles.GetByIdAsync(comment.ArticleId);
             if (article != null)
             {
+                await _unitOfWork.Comments.AddAsync(comment);
                 article.CommentCount++;
                 _unitOfWork.Articles.Update(article);
             }
@@ -50,7 +48,6 @@ namespace Narratify.Services.Implementations
             var comment = await _unitOfWork.Comments.GetByIdAsync(id);
             if (comment != null)
             {
-                // Update the article's comment count
                 var article = await _unitOfWork.Articles.GetByIdAsync(comment.ArticleId);
                 if (article != null && article.CommentCount > 0)
                 {
@@ -61,12 +58,6 @@ namespace Narratify.Services.Implementations
                 _unitOfWork.Comments.Remove(comment);
                 await _unitOfWork.CompleteAsync();
             }
-        }
-
-        public async Task<int> GetCommentsCountForLastWeekAsync()
-        {
-            var oneWeekAgo = DateTime.UtcNow.AddDays(-7);
-            return await _unitOfWork.Comments.CountAsync(c => c.CreatedAt >= oneWeekAgo);
         }
     }
 }

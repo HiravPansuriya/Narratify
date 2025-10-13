@@ -58,39 +58,11 @@
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="bg-white rounded-2xl shadow-lg border-2 border-gray-100 p-8 md:p-12">
             <div id="article-content" class="preview prose prose-lg prose-gray max-w-none prose-content">
-                <!-- Content will be rendered here by marked.js -->
+                @Html.Raw(Model.Article.HtmlContent)
             </div>
         </div>
     </div>
 </article>
-
-<!-- Article Actions -->
-<section class="bg-gray-50 py-8 border-y border-gray-200">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-6">
-                <button class="flex items-center space-x-2 text-gray-600 hover:text-purple-600 transition-colors duration-300">
-                    <i class="fas fa-heart"></i>
-                    <span>Like</span>
-                </button>
-                <button class="flex items-center space-x-2 text-gray-600 hover:text-blue-600 transition-colors duration-300">
-                    <i class="fas fa-share"></i>
-                    <span>Share</span>
-                </button>
-                <button class="flex items-center space-x-2 text-gray-600 hover:text-green-600 transition-colors duration-300">
-                    <i class="fas fa-bookmark"></i>
-                    <span>Save</span>
-                </button>
-            </div>
-            <div class="text-sm text-gray-500">
-                <span class="flex items-center space-x-1">
-                    <i class="fas fa-comments"></i>
-                    <span>@Model.Comments.Count comments</span>
-                </span>
-            </div>
-        </div>
-    </div>
-</section>
 
 <!-- Comments Section -->
 <section class="bg-white py-12">
@@ -173,8 +145,15 @@
                                         <div>
                                             <h4 class="font-semibold text-gray-900">@(comment.User?.DisplayName ?? "Unknown User")</h4>
                                             <p class="text-sm text-gray-500">
-                                                <time datetime="@comment.CreatedAt.ToString("yyyy-MM-dd")">
-                                                    @comment.CreatedAt.ToString("MMMM dd, yyyy 'at' h:mm tt")
+                                                @{
+                                                    // Convert UTC time to IST (UTC +5:30)
+                                                    var istTime = TimeZoneInfo.ConvertTimeFromUtc(
+                                                        comment.CreatedAt,
+                                                        TimeZoneInfo.FindSystemTimeZoneById("India Standard Time")
+                                                    );
+                                                }
+                                                <time datetime="@istTime.ToString("yyyy-MM-ddTHH:mm:ss")">
+                                                    @istTime.ToString("MMMM dd, yyyy 'at' h:mm tt")
                                                 </time>
                                             </p>
                                         </div>
@@ -234,29 +213,10 @@
 </section>
 
 @section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
     <link rel="stylesheet" href="~/css/markdown.css" />
     <script>
         function confirmDelete(event) {
             return confirm('Are you sure you want to delete this comment? This action cannot be undone.');
         }
-
-        // Client-side rendering of markdown content using marked.js
-        document.addEventListener('DOMContentLoaded', function () {
-            const articleContent = @Html.Raw(Json.Serialize(Model.Article.Content ?? ""));
-            const articleContentElement = document.getElementById('article-content');
-            
-            if (articleContent && articleContent.trim()) {
-                // Use marked.js for proper markdown-to-HTML conversion
-                const html = marked.parse(articleContent);
-                articleContentElement.innerHTML = html;
-                articleContentElement.className = "preview prose prose-lg prose-gray max-w-none prose-content";
-            } else {
-                // Fallback to existing HtmlContent if Content is empty
-                const htmlContent = @Html.Raw(Json.Serialize(Model.Article.HtmlContent ?? ""));
-                articleContentElement.innerHTML = htmlContent;
-                articleContentElement.className = "prose prose-lg prose-gray max-w-none prose-content";
-            }
-        });
     </script>
 }

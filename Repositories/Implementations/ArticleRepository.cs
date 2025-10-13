@@ -23,9 +23,4 @@ public class ArticleRepository : RepositoryBase<Article>, IArticleRepository
             .Include(a => a.Author)
             .ToListAsync();
     }
-
-    public IQueryable<Article> GetQueryable()
-    {
-        return DbContext.Articles.AsQueryable();
-    }
 }

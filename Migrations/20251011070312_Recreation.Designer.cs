@@ -12,15 +12,15 @@ using Narratify.Data;
 namespace Narratify.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250921105753_AddUserRoleToUser")]
-    partial class AddUserRoleToUser
+    [Migration("20251011070312_Recreation")]
+    partial class Recreation
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.9")
+                .HasAnnotation("ProductVersion", "8.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -170,9 +170,6 @@ namespace Narratify.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int?>("CategoryId")
-                        .HasColumnType("int");
-
                     b.Property<int>("CommentCount")
                         .HasColumnType("int");
 
@@ -183,23 +180,12 @@ namespace Narratify.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("FeaturedImageAlt")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("FeaturedImageUrl")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
                     b.Property<string>("HtmlContent")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsPublished")
                         .HasColumnType("bit");
-
-                    b.Property<int>("LikeCount")
-                        .HasColumnType("int");
 
                     b.Property<DateTime?>("PublishedAt")
                         .HasColumnType("datetime2");
@@ -234,67 +220,7 @@ namespace Narratify.Migrations
 
                     b.HasIndex("AuthorId");
 
-                    b.HasIndex("CategoryId");
-
                     b.ToTable("Articles");
-                });
-
-            modelBuilder.Entity("Narratify.Models.Entities.ArticleCategory", b =>
-                {
-                    b.Property<int>("ArticleId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.HasKey("ArticleId", "CategoryId");
-
-                    b.HasIndex("CategoryId");
-
-                    b.ToTable("ArticleCategories");
-                });
-
-            modelBuilder.Entity("Narratify.Models.Entities.Category", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ArticleCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Color")
-                        .HasMaxLength(7)
-                        .HasColumnType("nvarchar(7)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Slug")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("Narratify.Models.Entities.Comment", b =>
@@ -316,23 +242,8 @@ namespace Narratify.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DislikeCount")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("EditedAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("HtmlContent")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("LikeCount")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ParentCommentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ReplyCount")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -340,13 +251,16 @@ namespace Narratify.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("UserId1")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ArticleId");
 
-                    b.HasIndex("ParentCommentId");
-
                     b.HasIndex("UserId");
+
+                    b.HasIndex("UserId1");
 
                     b.ToTable("Comments");
                 });
@@ -385,17 +299,13 @@ namespace Narratify.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<bool>("IsEmailVerified")
-                        .HasColumnType("bit");
+                    b.Property<DateTime?>("LastLoginAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Location")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -424,14 +334,8 @@ namespace Narratify.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("Role")
-                        .HasColumnType("int");
-
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
@@ -439,10 +343,6 @@ namespace Narratify.Migrations
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("Website")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
@@ -516,30 +416,7 @@ namespace Narratify.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Narratify.Models.Entities.Category", null)
-                        .WithMany("Articles")
-                        .HasForeignKey("CategoryId");
-
                     b.Navigation("Author");
-                });
-
-            modelBuilder.Entity("Narratify.Models.Entities.ArticleCategory", b =>
-                {
-                    b.HasOne("Narratify.Models.Entities.Article", "Article")
-                        .WithMany("ArticleCategories")
-                        .HasForeignKey("ArticleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Narratify.Models.Entities.Category", "Category")
-                        .WithMany("ArticleCategories")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Article");
-
-                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("Narratify.Models.Entities.Comment", b =>
@@ -547,47 +424,33 @@ namespace Narratify.Migrations
                     b.HasOne("Narratify.Models.Entities.Article", "Article")
                         .WithMany("Comments")
                         .HasForeignKey("ArticleId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("Narratify.Models.Entities.Comment", "ParentComment")
-                        .WithMany("Replies")
-                        .HasForeignKey("ParentCommentId");
 
                     b.HasOne("Narratify.Models.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("Narratify.Models.Entities.User", null)
+                        .WithMany("Comments")
+                        .HasForeignKey("UserId1");
 
                     b.Navigation("Article");
-
-                    b.Navigation("ParentComment");
 
                     b.Navigation("User");
                 });
 
             modelBuilder.Entity("Narratify.Models.Entities.Article", b =>
                 {
-                    b.Navigation("ArticleCategories");
-
                     b.Navigation("Comments");
-                });
-
-            modelBuilder.Entity("Narratify.Models.Entities.Category", b =>
-                {
-                    b.Navigation("ArticleCategories");
-
-                    b.Navigation("Articles");
-                });
-
-            modelBuilder.Entity("Narratify.Models.Entities.Comment", b =>
-                {
-                    b.Navigation("Replies");
                 });
 
             modelBuilder.Entity("Narratify.Models.Entities.User", b =>
                 {
                     b.Navigation("Articles");
+
+                    b.Navigation("Comments");
                 });
 #pragma warning restore 612, 618
         }

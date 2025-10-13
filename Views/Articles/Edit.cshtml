@@ -99,7 +99,7 @@
 - [Links](https://example.com)
 - And much more!
 
-Share your thoughts, experiences, and insights with the world..."></textarea>
+Share your thoughts, experiences, and insights with the world...">@Model.Content</textarea>
                         <span asp-validation-for="Content" class="text-red-500 text-sm block mt-2"></span>
                     </div>
                 </div>
@@ -111,32 +111,16 @@ Share your thoughts, experiences, and insights with the world..."></textarea>
                         <span>Live Preview</span>
                     </label>
                     
-                    <div id="preview" class="preview h-[750px] p-6 border-2 border-gray-200 rounded-2xl bg-gray-50 prose prose-lg max-w-none overflow-y-auto">
-                        <div class="text-gray-400 text-center py-20">
-                            <i class="fas fa-file-alt text-4xl mb-4"></i>
-                            <p>Your preview will appear here as you type...</p>
-                        </div>
+                    <div id="preview" class="preview prose-content h-[750px] p-6 border-2 border-gray-200 rounded-2xl bg-gray-50 prose prose-lg max-w-none overflow-y-auto">
+                        @* <div class="text-gray-400 text-center py-20"> *@
+                        @*     <i class="fas fa-file-alt text-4xl mb-4"></i> *@
+                        @*     <p>Your preview will appear here as you type...</p> *@
+                        @* </div> *@
+                        @Html.Raw(Model.HtmlContent)
                     </div>
                 </div>
             </div>
-
-            <!-- Publication Status -->
-            <div class="mt-8 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
-                <h3 class="font-semibold text-blue-900 mb-3 flex items-center">
-                    <i class="fas fa-toggle-on mr-2"></i>
-                    Publication Status
-                </h3>
-                <div class="flex items-center space-x-4">
-                    <label class="flex items-center space-x-2 cursor-pointer">
-                        <input type="checkbox" asp-for="IsPublished" id="publishedCheckbox" class="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
-                        <span class="text-blue-800 font-medium">Publish this article</span>
-                    </label>
-                    <div class="text-sm text-blue-600">
-                        <span id="statusText">@(Model.IsPublished ? "Published" : "Draft")</span>
-                    </div>
-                </div>
-            </div>
-
+            
             <!-- Writing Tips -->
             <div class="mt-8 bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl p-6 border border-purple-200">
                 <h3 class="font-semibold text-purple-900 mb-3 flex items-center">
@@ -209,8 +193,8 @@ Share your thoughts, experiences, and insights with the world..."></textarea>
         }
 
         // Live preview functionality with marked.js
-        document.getElementById('editor').addEventListener('input', function() {
-            const markdownText = this.value;
+        document.getElementById('editor').addEventListener('input', function(e) {
+            const markdownText = e.target.value;
             const preview = document.getElementById('preview');
             
             if (markdownText.trim()) {

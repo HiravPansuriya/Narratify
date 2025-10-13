@@ -25,26 +25,12 @@ public class Comment
 
     [ForeignKey("ArticleId")] public virtual Article Article { get; set; } = null!;
 
-    /* <---- Threading Support ----> */
-    [Display(Name = "Parent Comment ID")] public int? ParentCommentId { get; set; }
-
-    [ForeignKey("ParentCommentId")] public virtual Comment? ParentComment { get; set; }
-
-    public virtual ICollection<Comment> Replies { get; set; } = new List<Comment>();
-
     /* <---- Timestamps ----> */
     [Display(Name = "Created At")] public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     [Display(Name = "Updated At")] public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
     [Display(Name = "Edited At")] public DateTime? EditedAt { get; set; }
-
-    /* <--- Engagement Metrics ----> */
-    [Display(Name = "Like Count")] public int LikeCount { get; set; }
-
-    [Display(Name = "Dislike Count")] public int DislikeCount { get; set; }
-
-    [Display(Name = "Reply Count")] public int ReplyCount { get; set; }
 
     /* <---- Computed Properties ----> */
     [NotMapped]
@@ -54,24 +40,6 @@ public class Comment
     [NotMapped]
     [Display(Name = "Author Email")]
     public string AuthorEmail => User?.Email ?? string.Empty;
-
-    [NotMapped]
-    [Display(Name = "Thread Level")]
-    public int ThreadLevel
-    {
-        get
-        {
-            var level = 0;
-            var current = ParentComment;
-            while (current != null)
-            {
-                level++;
-                current = current.ParentComment;
-            }
-
-            return level;
-        }
-    }
 
     [NotMapped]
     [Display(Name = "Time Ago")]
@@ -99,21 +67,6 @@ public class Comment
         UpdatedAt = DateTime.UtcNow;
     }
 
-    public void IncrementLikes()
-    {
-        LikeCount++;
-    }
-
-    public void IncrementDislikes()
-    {
-        DislikeCount++;
-    }
-
-    public void IncrementReplyCount()
-    {
-        ReplyCount++;
-    }
-
     public bool CanBeEditedBy(string userId)
     {
         return UserId == userId &&
@@ -123,17 +76,5 @@ public class Comment
     public bool CanBeDeletedBy(string userId)
     {
         return UserId == userId;
-    }
-
-    public List<Comment> GetAllDescendants()
-    {
-        var descendants = new List<Comment>();
-        foreach (var reply in Replies)
-        {
-            descendants.Add(reply);
-            descendants.AddRange(reply.GetAllDescendants());
-        }
-
-        return descendants;
     }
 }

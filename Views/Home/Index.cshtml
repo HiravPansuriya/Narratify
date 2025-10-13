@@ -54,7 +54,7 @@
 <section class="py-20 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16">
-            <h2 class="text-4xl font-bold text-gray-900 mb-4">Featured Stories</h2>
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">Latest Stories</h2>
             <p class="text-xl text-gray-600 max-w-2xl mx-auto">
                 Discover inspiring articles from our community of talented writers
             </p>
@@ -66,19 +66,9 @@
                 @foreach (var article in Model.FeaturedArticles)
                 {
                     <article class="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-purple-200">
-                        @if (!string.IsNullOrEmpty(article.FeaturedImageUrl))
-                        {
-                            <div class="aspect-w-16 aspect-h-9 overflow-hidden">
-                                <img src="@article.FeaturedImageUrl" alt="@article.FeaturedImageAlt" 
-                                     class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="h-48 bg-gradient-to-br from-purple-400 to-blue-500 flex items-center justify-center">
-                                <i class="fas fa-book-open text-white text-4xl opacity-50"></i>
-                            </div>
-                        }
+                        <div class="h-48 bg-gradient-to-br from-purple-400 to-blue-500 flex items-center justify-center">
+                            <i class="fas fa-book-open text-white text-4xl opacity-50"></i>
+                        </div>
                         
                         <div class="p-6">
                             <div class="flex items-center mb-4">

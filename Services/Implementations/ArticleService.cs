@@ -36,7 +36,6 @@ namespace Narratify.Services.Implementations
 
         public async Task<IEnumerable<Article>> GetPublishedArticles()
         {
-            // Ensure related data for views is available
             return await _unitOfWork.Articles.GetPublishedWithIncludesAsync();
         }
 
@@ -49,6 +48,7 @@ namespace Narratify.Services.Implementations
         {
             article.GenerateSlug();
             article.UpdateReadingTime();
+            article.Summary = article.PreviewText;
             await _unitOfWork.Articles.AddAsync(article);
             await _unitOfWork.CompleteAsync();
         }
@@ -56,6 +56,7 @@ namespace Narratify.Services.Implementations
         public async Task UpdateArticle(Article article)
         {
             _unitOfWork.Articles.Update(article);
+            article.UpdateReadingTime();
             await _unitOfWork.CompleteAsync();
         }
 
@@ -74,8 +75,7 @@ namespace Narratify.Services.Implementations
             var article = await _unitOfWork.Articles.GetByIdAsync(id);
             if (article != null)
             {
-                article.IsPublished = true;
-                article.Status = ArticleStatus.Published;
+                article.Publish();
                 await UpdateArticle(article);
                 return true;
             }
@@ -87,8 +87,7 @@ namespace Narratify.Services.Implementations
             var article = await _unitOfWork.Articles.GetByIdAsync(id);
             if (article != null)
             {
-                article.IsPublished = false;
-                article.Status = ArticleStatus.Draft;
+                article.Unpublish();
                 await UpdateArticle(article);
                 return true;
             }

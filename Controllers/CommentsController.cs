@@ -29,10 +29,9 @@ namespace Narratify.Controllers
                 }
 
                 var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                var isAdmin = User.IsInRole("Admin");
-
-                // Check if the current user is the comment author or an admin
-                if (comment.UserId != currentUserId && !isAdmin)
+                
+                // Check if the current user is the comment author
+                if (comment.UserId != currentUserId)
                 {
                     TempData["ErrorMessage"] = "You don't have permission to delete this comment.";
                     return RedirectToReturnUrl(returnUrl);

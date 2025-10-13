@@ -27,6 +27,7 @@ namespace Narratify.Models.ViewModels.Articles
         public bool IsPublished { get; set; }
 
         // Read-only properties for display
+        public string? HtmlContent { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public DateTime? PublishedAt { get; set; }

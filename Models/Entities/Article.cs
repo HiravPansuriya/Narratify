@@ -7,8 +7,7 @@ namespace Narratify.Models.Entities;
 public class Article
 {
     [Key] public int Id { get; set; }
-
-    /* <---- Article Information ----> */
+    
     [Required]
     [StringLength(200, ErrorMessage = "Title cannot exceed 200 characters")]
     [Display(Name = "Title")]
@@ -27,15 +26,6 @@ public class Article
     [Display(Name = "Slug")]
     public string Slug { get; set; } = string.Empty;
 
-    /* <---- Featured Image ----> */
-    [StringLength(500)]
-    [Display(Name = "Featured Image URL")]
-    public string? FeaturedImageUrl { get; set; }
-
-    [StringLength(200)]
-    [Display(Name = "Featured Image Alt Text")]
-    public string? FeaturedImageAlt { get; set; }
-
     /* <---- Publishing Status ----> */
     [Display(Name = "Status")] public ArticleStatus Status { get; set; } = ArticleStatus.Draft;
 
@@ -51,8 +41,6 @@ public class Article
     /* <---- Engagement Metrics ----> */
     [Display(Name = "View Count")] public int ViewCount { get; set; }
 
-    [Display(Name = "Like Count")] public int LikeCount { get; set; } = 0;
-
     [Display(Name = "Comment Count")] public int CommentCount { get; set; } = 0;
 
     /* <---- Reading Time ----> */
@@ -63,8 +51,7 @@ public class Article
     [Required] [Display(Name = "Author")] public string AuthorId { get; set; } = string.Empty;
 
     [ForeignKey("AuthorId")] public virtual User Author { get; set; } = null!;
-
-    // Navigation Properties
+    
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
     /* <---- Computed Properties ----> */
